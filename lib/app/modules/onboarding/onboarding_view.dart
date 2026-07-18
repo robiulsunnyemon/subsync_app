@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:subsync/app/core/theme/app_colors.dart';
 import 'package:subsync/app/core/theme/app_text_styles.dart';
 import 'package:subsync/app/core/constants/app_constants.dart';
+import 'package:subsync/app/core/theme/app_sizes.dart';
 import 'onboarding_controller.dart';
 
 class OnboardingView extends GetView<OnboardingController> {
@@ -14,13 +16,13 @@ class OnboardingView extends GetView<OnboardingController> {
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppConstants.appName, style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+        title: Text(AppConstants.appName, style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: AppSizes.font20)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           TextButton(
             onPressed: controller.skip,
-            child: Text('Skip', style: AppTextStyles.label.copyWith(color: AppColors.neutral)),
+            child: Text('Skip', style: AppTextStyles.label.copyWith(color: AppColors.neutral, fontSize: AppSizes.font14)),
           )
         ],
       ),
@@ -54,18 +56,21 @@ class OnboardingView extends GetView<OnboardingController> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(3, (index) => _buildDot(index == controller.currentPage.value)),
             )),
-            const SizedBox(height: 24),
+            AppSizes.gapH24,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: AppSizes.p24),
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: controller.next,
-                  child: Obx(() => Text(controller.currentPage.value == 2 ? 'Get Started' : 'Next →')),
+                  child: Obx(() => Text(
+                    controller.currentPage.value == 2 ? 'Get Started' : 'Next →',
+                    style: TextStyle(fontSize: AppSizes.font16),
+                  )),
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            AppSizes.gapH24,
           ],
         ),
       ),
@@ -74,15 +79,15 @@ class OnboardingView extends GetView<OnboardingController> {
 
   Widget _buildPage({required String title, required String description, required IconData icon}) {
     return Padding(
-      padding: const EdgeInsets.all(40.0),
+      padding: EdgeInsets.all(AppSizes.p40),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 100, color: AppColors.secondary),
-          const SizedBox(height: 40),
-          Text(title, style: AppTextStyles.headline.copyWith(fontSize: 22), textAlign: TextAlign.center),
-          const SizedBox(height: 16),
-          Text(description, style: AppTextStyles.body, textAlign: TextAlign.center),
+          Icon(icon, size: 100.w, color: AppColors.secondary),
+          AppSizes.gapH40,
+          Text(title, style: AppTextStyles.headline.copyWith(fontSize: 22.sp), textAlign: TextAlign.center),
+          AppSizes.gapH16,
+          Text(description, style: AppTextStyles.body.copyWith(fontSize: AppSizes.font16), textAlign: TextAlign.center),
         ],
       ),
     );
@@ -90,12 +95,12 @@ class OnboardingView extends GetView<OnboardingController> {
 
   Widget _buildDot(bool isActive) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      height: 6,
-      width: isActive ? 24 : 6,
+      margin: EdgeInsets.symmetric(horizontal: AppSizes.p4),
+      height: 6.h,
+      width: isActive ? 24.w : 6.w,
       decoration: BoxDecoration(
-        color: isActive ? AppColors.secondary : AppColors.neutral.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(3),
+        color: isActive ? AppColors.secondary : AppColors.neutral.withValues(alpha:0.3),
+        borderRadius: BorderRadius.circular(3.r),
       ),
     );
   }

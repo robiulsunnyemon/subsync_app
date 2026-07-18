@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:subsync/app/core/theme/app_colors.dart';
 import 'package:subsync/app/core/theme/app_text_styles.dart';
 import 'package:subsync/app/core/constants/app_constants.dart';
+import 'package:subsync/app/core/theme/app_sizes.dart';
 import 'login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
@@ -13,141 +15,144 @@ class LoginView extends GetView<LoginController> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: const Text(AppConstants.appName, style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+        title: Text(AppConstants.appName, style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: AppSizes.font20)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.help_outline, color: AppColors.primary),
+            icon: Icon(Icons.help_outline, color: AppColors.primary, size: AppSizes.iconMedium),
             onPressed: () {},
           )
         ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(AppSizes.p24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 20),
-              const Icon(Icons.laptop_mac_rounded, size: 60, color: AppColors.primary),
-              const SizedBox(height: 24),
+              AppSizes.gapH20,
+              Icon(Icons.laptop_mac_rounded, size: 60.w, color: AppColors.primary),
+              AppSizes.gapH24,
               Text(
                 'Welcome Back',
-                style: AppTextStyles.headline.copyWith(fontSize: 28),
+                style: AppTextStyles.headline.copyWith(fontSize: 28.sp),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              AppSizes.gapH8,
               Text(
                 'Manage your recurring costs with ease.',
-                style: AppTextStyles.body,
+                style: AppTextStyles.body.copyWith(fontSize: AppSizes.font16),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 40),
-              Text('Email Address', style: AppTextStyles.label),
-              const SizedBox(height: 8),
+              AppSizes.gapH40,
+              Text('Email Address', style: AppTextStyles.label.copyWith(fontSize: AppSizes.font12)),
+              AppSizes.gapH8,
               Obx(() => TextField(
                 controller: controller.emailController,
+                style: TextStyle(fontSize: AppSizes.font14),
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.mail_outline, color: AppColors.neutral),
+                  prefixIcon: Icon(Icons.mail_outline, color: AppColors.neutral, size: AppSizes.iconMedium),
                   hintText: 'name@company.com',
                   errorText: controller.emailError.value,
                 ),
                 keyboardType: TextInputType.emailAddress,
                 onChanged: (_) => controller.emailError.value = null,
               )),
-              const SizedBox(height: 20),
+              AppSizes.gapH20,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Password', style: AppTextStyles.label),
+                  Text('Password', style: AppTextStyles.label.copyWith(fontSize: AppSizes.font12)),
                   GestureDetector(
                     onTap: controller.goToForgotPassword,
-                    child: Text('Forgot Password?', style: AppTextStyles.label.copyWith(color: AppColors.primary)),
+                    child: Text('Forgot Password?', style: AppTextStyles.label.copyWith(color: AppColors.primary, fontSize: AppSizes.font12)),
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              AppSizes.gapH8,
               Obx(() => TextField(
                 controller: controller.passwordController,
                 obscureText: !controller.isPasswordVisible.value,
+                style: TextStyle(fontSize: AppSizes.font14),
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.lock_outline, color: AppColors.neutral),
+                  prefixIcon: Icon(Icons.lock_outline, color: AppColors.neutral, size: AppSizes.iconMedium),
                   hintText: '********',
                   errorText: controller.passwordError.value,
                   suffixIcon: IconButton(
                     icon: Icon(
                       controller.isPasswordVisible.value ? Icons.visibility : Icons.visibility_off,
                       color: AppColors.neutral,
+                      size: AppSizes.iconMedium,
                     ),
                     onPressed: controller.togglePasswordVisibility,
                   ),
                 ),
                 onChanged: (_) => controller.passwordError.value = null,
               )),
-              const SizedBox(height: 32),
+              AppSizes.gapH32,
               ElevatedButton(
                 onPressed: controller.login,
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Sign In'),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward),
+                    Text('Sign In', style: TextStyle(fontSize: AppSizes.font16)),
+                    AppSizes.gapW8,
+                    Icon(Icons.arrow_forward, size: AppSizes.iconMedium),
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
+              AppSizes.gapH32,
               Row(
                 children: [
-                  Expanded(child: Divider(color: AppColors.neutral.withOpacity(0.3))),
+                  Expanded(child: Divider(color: AppColors.neutral.withValues(alpha: 0.3))),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('OR CONTINUE WITH', style: AppTextStyles.label.copyWith(fontSize: 10)),
+                    padding: EdgeInsets.symmetric(horizontal: AppSizes.p16),
+                    child: Text('OR CONTINUE WITH', style: AppTextStyles.label.copyWith(fontSize: AppSizes.font10)),
                   ),
-                  Expanded(child: Divider(color: AppColors.neutral.withOpacity(0.3))),
+                  Expanded(child: Divider(color: AppColors.neutral.withValues(alpha:0.3))),
                 ],
               ),
-              const SizedBox(height: 24),
+              AppSizes.gapH24,
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: controller.signInWithGoogle,
-                      icon: const Icon(Icons.g_mobiledata, color: AppColors.black),
-                      label: const Text('Google', style: TextStyle(color: AppColors.black)),
+                      icon: Icon(Icons.g_mobiledata, color: AppColors.black, size: AppSizes.iconLarge),
+                      label: Text('Google', style: TextStyle(color: AppColors.black, fontSize: AppSizes.font14)),
                       style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: BorderSide(color: AppColors.neutral.withOpacity(0.3)),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        padding: EdgeInsets.symmetric(vertical: AppSizes.p16),
+                        side: BorderSide(color: AppColors.neutral.withValues(alpha:0.3)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radius8)),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  AppSizes.gapW16,
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () {},
-                      icon: const Icon(Icons.apple, color: AppColors.black),
-                      label: const Text('Apple', style: TextStyle(color: AppColors.black)),
+                      icon: Icon(Icons.apple, color: AppColors.black, size: AppSizes.iconMedium),
+                      label: Text('Apple', style: TextStyle(color: AppColors.black, fontSize: AppSizes.font14)),
                       style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: BorderSide(color: AppColors.neutral.withOpacity(0.3)),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        padding: EdgeInsets.symmetric(vertical: AppSizes.p16),
+                        side: BorderSide(color: AppColors.neutral.withValues(alpha:0.3)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radius8)),
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
+              AppSizes.gapH40,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Don\'t have an account? '),
+                  Text('Don\'t have an account? ', style: TextStyle(fontSize: AppSizes.font14)),
                   GestureDetector(
                     onTap: controller.goToSignUp,
                     child: Text(
                       'Sign up for free',
-                      style: AppTextStyles.body.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold),
+                      style: AppTextStyles.body.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: AppSizes.font14),
                     ),
                   ),
                 ],

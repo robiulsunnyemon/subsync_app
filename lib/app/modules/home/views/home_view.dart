@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:subsync/app/core/theme/app_sizes.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -10,33 +10,33 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HomeView'),
+        title: Text('HomeView', style: TextStyle(fontSize: AppSizes.font20)),
         centerTitle: true,
         actions: [
           Obx(() => controller.isLoading.value
-              ? const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+              ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSizes.p16),
                   child: Center(
                     child: SizedBox(
-                      width: 20,
-                      height: 20,
+                      width: 20.w,
+                      height: 20.w,
                       child: CircularProgressIndicator(
-                        strokeWidth: 2,
+                        strokeWidth: 2.w,
                         color: Colors.black,
                       ),
                     ),
                   ),
                 )
               : IconButton(
-                  icon: const Icon(Icons.logout),
+                  icon: Icon(Icons.logout, size: AppSizes.iconMedium),
                   onPressed: () => controller.logout(),
                 )),
         ],
       ),
-      body: const Center(
+      body: Center(
         child: Text(
           'HomeView is working',
-          style: TextStyle(fontSize: 20),
+          style: TextStyle(fontSize: AppSizes.font20),
         ),
       ),
     );

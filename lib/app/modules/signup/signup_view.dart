@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:subsync/app/core/theme/app_colors.dart';
 import 'package:subsync/app/core/theme/app_text_styles.dart';
+import 'package:subsync/app/core/theme/app_sizes.dart';
 import 'signup_controller.dart';
 
 class SignupView extends GetView<SignupController> {
@@ -12,73 +14,76 @@ class SignupView extends GetView<SignupController> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: const Text('SubSync', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+        title: Text('SubSync', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: AppSizes.font20)),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(AppSizes.p24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 10),
+              AppSizes.gapH12,
               Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(color: AppColors.tertiary, borderRadius: BorderRadius.circular(16)),
-                child: const Icon(Icons.check_box, size: 30, color: AppColors.primary),
+                width: 60.w,
+                height: 60.h,
+                decoration: BoxDecoration(color: AppColors.tertiary, borderRadius: BorderRadius.circular(AppSizes.radius16)),
+                child: Icon(Icons.check_box, size: 30.w, color: AppColors.primary),
               ),
-              const SizedBox(height: 16),
-              Text('Create Account', style: AppTextStyles.headline.copyWith(fontSize: 28), textAlign: TextAlign.center),
-              const SizedBox(height: 8),
-              Text('Join thousands of freelancers\nmanaging expenses with clarity.', style: AppTextStyles.body, textAlign: TextAlign.center),
-              const SizedBox(height: 30),
+              AppSizes.gapH16,
+              Text('Create Account', style: AppTextStyles.headline.copyWith(fontSize: 28.sp), textAlign: TextAlign.center),
+              AppSizes.gapH8,
+              Text('Join thousands of freelancers\nmanaging expenses with clarity.', style: AppTextStyles.body.copyWith(fontSize: AppSizes.font16), textAlign: TextAlign.center),
+              AppSizes.gapH32,
               
-              Text('Full Name', style: AppTextStyles.label),
-              const SizedBox(height: 8),
+              Text('Full Name', style: AppTextStyles.label.copyWith(fontSize: AppSizes.font12)),
+              AppSizes.gapH8,
               Obx(() => TextField(
                 controller: controller.fullNameController,
+                style: TextStyle(fontSize: AppSizes.font14),
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.person_outline, color: AppColors.neutral), 
+                  prefixIcon: Icon(Icons.person_outline, color: AppColors.neutral, size: AppSizes.iconMedium), 
                   hintText: 'John Doe',
                   errorText: controller.fullNameError.value,
                 ),
                 onChanged: (_) => controller.fullNameError.value = null,
               )),
-              const SizedBox(height: 16),
+              AppSizes.gapH16,
               
-              Text('Email Address', style: AppTextStyles.label),
-              const SizedBox(height: 8),
+              Text('Email Address', style: AppTextStyles.label.copyWith(fontSize: AppSizes.font12)),
+              AppSizes.gapH8,
               Obx(() => TextField(
                 controller: controller.emailController,
+                style: TextStyle(fontSize: AppSizes.font14),
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.mail_outline, color: AppColors.neutral), 
+                  prefixIcon: Icon(Icons.mail_outline, color: AppColors.neutral, size: AppSizes.iconMedium), 
                   hintText: 'name@company.com',
                   errorText: controller.emailError.value,
                 ),
                 keyboardType: TextInputType.emailAddress,
                 onChanged: (_) => controller.emailError.value = null,
               )),
-              const SizedBox(height: 16),
+              AppSizes.gapH16,
               
-              Text('Password', style: AppTextStyles.label),
-              const SizedBox(height: 8),
+              Text('Password', style: AppTextStyles.label.copyWith(fontSize: AppSizes.font12)),
+              AppSizes.gapH8,
               Obx(() => TextField(
                 controller: controller.passwordController,
                 obscureText: !controller.isPasswordVisible.value,
+                style: TextStyle(fontSize: AppSizes.font14),
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.lock_outline, color: AppColors.neutral),
+                  prefixIcon: Icon(Icons.lock_outline, color: AppColors.neutral, size: AppSizes.iconMedium),
                   hintText: '********',
                   errorText: controller.passwordError.value,
                   suffixIcon: IconButton(
-                    icon: Icon(controller.isPasswordVisible.value ? Icons.visibility : Icons.visibility_off, color: AppColors.neutral),
+                    icon: Icon(controller.isPasswordVisible.value ? Icons.visibility : Icons.visibility_off, color: AppColors.neutral, size: AppSizes.iconMedium),
                     onPressed: controller.togglePasswordVisibility,
                   ),
                 ),
                 onChanged: (_) => controller.passwordError.value = null,
               )),
-              const SizedBox(height: 16),
+              AppSizes.gapH16,
               
               Row(
                 children: [
@@ -88,52 +93,62 @@ class SignupView extends GetView<SignupController> {
                     activeColor: AppColors.primary,
                   )),
                   Expanded(
-                    child: Text('I agree to the Terms of Service and Privacy Policy.', style: AppTextStyles.label),
+                    child: Text('I agree to the Terms of Service and Privacy Policy.', style: AppTextStyles.label.copyWith(fontSize: AppSizes.font12)),
                   ),
                 ],
               ),
               
-              const SizedBox(height: 24),
+              AppSizes.gapH24,
               ElevatedButton(
                 onPressed: controller.signUp,
-                child: const Text('Sign Up'),
+                child: Text('Sign Up', style: TextStyle(fontSize: AppSizes.font16)),
               ),
-              const SizedBox(height: 24),
+              AppSizes.gapH24,
               Row(
                 children: [
-                  Expanded(child: Divider(color: AppColors.neutral.withOpacity(0.3))),
-                  Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text('OR CONTINUE WITH', style: AppTextStyles.label.copyWith(fontSize: 10))),
-                  Expanded(child: Divider(color: AppColors.neutral.withOpacity(0.3))),
+                  Expanded(child: Divider(color: AppColors.neutral.withValues(alpha:0.3))),
+                  Padding(padding: EdgeInsets.symmetric(horizontal: AppSizes.p16), child: Text('OR CONTINUE WITH', style: AppTextStyles.label.copyWith(fontSize: AppSizes.font10))),
+                  Expanded(child: Divider(color: AppColors.neutral.withValues(alpha:0.3))),
                 ],
               ),
-              const SizedBox(height: 20),
+              AppSizes.gapH20,
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: controller.signInWithGoogle,
-                      icon: const Icon(Icons.g_mobiledata, color: AppColors.black),
-                      label: const Text('Google', style: TextStyle(color: AppColors.black)),
+                      icon: Icon(Icons.g_mobiledata, color: AppColors.black, size: AppSizes.iconLarge),
+                      label: Text('Google', style: TextStyle(color: AppColors.black, fontSize: AppSizes.font14)),
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: AppSizes.p16),
+                        side: BorderSide(color: AppColors.neutral.withValues(alpha:0.3)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radius8)),
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  AppSizes.gapW16,
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () {},
-                      icon: const Icon(Icons.apple, color: AppColors.black),
-                      label: const Text('Apple', style: TextStyle(color: AppColors.black)),
+                      icon: Icon(Icons.apple, color: AppColors.black, size: AppSizes.iconMedium),
+                      label: Text('Apple', style: TextStyle(color: AppColors.black, fontSize: AppSizes.font14)),
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: AppSizes.p16),
+                        side: BorderSide(color: AppColors.neutral.withValues(alpha:0.3)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radius8)),
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
+              AppSizes.gapH32,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Already have an account? '),
+                  Text('Already have an account? ', style: TextStyle(fontSize: AppSizes.font14)),
                   GestureDetector(
                     onTap: controller.goToLogin,
-                    child: Text('Log In', style: AppTextStyles.body.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                    child: Text('Log In', style: AppTextStyles.body.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: AppSizes.font14)),
                   ),
                 ],
               ),
