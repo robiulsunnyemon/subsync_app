@@ -13,11 +13,20 @@ class OnboardingController extends GetxController {
   void next() {
     if (currentPage.value < 2) {
       pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeIn,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
       );
     } else {
       Get.offAllNamed(Routes.LOGIN); 
+    }
+  }
+
+  void previous() {
+    if (currentPage.value > 0) {
+      pageController.previousPage(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
     }
   }
 

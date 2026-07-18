@@ -22,6 +22,8 @@ class SubSync extends StatelessWidget {
           getPages: AppPages.routes,
           theme: AppTheme.lightTheme,
           debugShowCheckedModeBanner: false,
+          defaultTransition: Transition.fadeIn, // Smooth iOS style transition
+          transitionDuration: const Duration(milliseconds: 300), // Ensures it's smooth
         );
       },
     );

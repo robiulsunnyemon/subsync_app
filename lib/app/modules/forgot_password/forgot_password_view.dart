@@ -44,9 +44,9 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                             onTap: controller.goBack,
                             child: Row(
                               children: [
-                                Icon(Icons.arrow_back, size: AppSizes.iconSmall, color: AppColors.neutral),
+                                Icon(Icons.arrow_back, size: 16.sp, color: AppColors.primary),
                                 AppSizes.gapW8,
-                                Text('Back to Login', style: AppTextStyles.label.copyWith(fontSize: AppSizes.font12)),
+                                Text('Back to Login', style: AppTextStyles.label.copyWith(fontSize: AppSizes.font12, color: AppColors.primary)),
                               ],
                             ),
                           ),
@@ -84,21 +84,40 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                           ),
                           
                           AppSizes.gapH40,
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(Icons.info_outline, color: AppColors.secondary, size: AppSizes.iconMedium),
-                              AppSizes.gapW12,
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Having trouble?', style: AppTextStyles.label.copyWith(fontWeight: FontWeight.bold, fontSize: AppSizes.font12)),
-                                    Text('Check your spam folder or contact our\nsupport team at help@subsync.com.', style: AppTextStyles.label.copyWith(fontSize: AppSizes.font10)),
-                                  ],
+                          Container(
+                            padding: EdgeInsets.all(AppSizes.p16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8F7FA), // Very light purple/grey
+                              borderRadius: BorderRadius.circular(AppSizes.radius8),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(Icons.info_outline, color: const Color(0xFF006D37), size: AppSizes.iconMedium), // Darker green
+                                AppSizes.gapW12,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Having trouble?', style: AppTextStyles.label.copyWith(fontWeight: FontWeight.bold, fontSize: AppSizes.font12, color: AppColors.primary)),
+                                      AppSizes.gapH4,
+                                      Text.rich(
+                                        TextSpan(
+                                          text: 'Check your spam folder or contact our support team at ',
+                                          style: AppTextStyles.label.copyWith(fontSize: AppSizes.font10, color: AppColors.neutral, height: 1.5),
+                                          children: [
+                                            TextSpan(
+                                              text: 'help@subsync.com.',
+                                              style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ],
                       ),

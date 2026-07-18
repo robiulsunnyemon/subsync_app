@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
 
@@ -19,6 +20,7 @@ class AppTheme {
       centerTitle: true,
       iconTheme: const IconThemeData(color: AppColors.primary),
       titleTextStyle: AppTextStyles.headline.copyWith(fontSize: 20),
+      systemOverlayStyle: SystemUiOverlayStyle.dark, // Ensures status bar icons are dark (black)
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(

@@ -5,6 +5,8 @@ import 'package:subsync/app/core/theme/app_colors.dart';
 import 'package:subsync/app/core/theme/app_text_styles.dart';
 import 'package:subsync/app/core/constants/app_constants.dart';
 import 'package:subsync/app/core/theme/app_sizes.dart';
+import 'widgets/taxes_illustration.dart';
+import 'widgets/alerts_illustration.dart';
 import 'widgets/bento_illustration.dart';
 import 'onboarding_controller.dart';
 
@@ -44,12 +46,12 @@ class OnboardingView extends GetView<OnboardingController> {
                   _buildPage(
                     title: 'Never Miss a Renewal',
                     description: 'Get smart notifications before your trials end or prices increase. Save money effortlessly.',
-                    icon: Icons.notifications_active,
+                    illustration: const AlertsIllustration(),
                   ),
                   _buildPage(
                     title: 'Simplify Your Taxes',
                     description: 'Categorize your expenses as business or personal and generate reports for your accountant.',
-                    icon: Icons.receipt_long,
+                    illustration: const TaxesIllustration(),
                   ),
                 ],
               ),
@@ -61,18 +63,46 @@ class OnboardingView extends GetView<OnboardingController> {
             AppSizes.gapH24,
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppSizes.p24),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: controller.next,
-                  child: Obx(() => Text(
-                    controller.currentPage.value == 2 ? 'Get Started' : 'Next →',
-                    style: TextStyle(fontSize: AppSizes.font16),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56.h,
+                    child: ElevatedButton(
+                      onPressed: controller.next,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                        elevation: 4,
+                        shadowColor: AppColors.primary.withOpacity(0.3),
+                      ),
+                      child: Obx(() => Text(
+                        controller.currentPage.value == 2 ? 'Get Started' : 'Continue',
+                        style: TextStyle(fontSize: AppSizes.font16, fontWeight: FontWeight.bold),
+                      )),
+                    ),
+                  ),
+                  AppSizes.gapH16,
+                  Obx(() => Opacity(
+                    opacity: controller.currentPage.value > 0 ? 1.0 : 0.0,
+                    child: IgnorePointer(
+                      ignoring: controller.currentPage.value == 0,
+                      child: TextButton(
+                        onPressed: controller.previous,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.chevron_left, size: 20.sp, color: AppColors.neutral),
+                            AppSizes.gapW4,
+                            Text('Back', style: AppTextStyles.label.copyWith(fontSize: AppSizes.font14, color: AppColors.neutral)),
+                          ],
+                        ),
+                      ),
+                    ),
                   )),
-                ),
+                ],
               ),
             ),
-            AppSizes.gapH24,
+            AppSizes.gapH8,
           ],
         ),
       ),
