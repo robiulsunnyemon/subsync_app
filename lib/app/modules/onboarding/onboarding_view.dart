@@ -5,6 +5,7 @@ import 'package:subsync/app/core/theme/app_colors.dart';
 import 'package:subsync/app/core/theme/app_text_styles.dart';
 import 'package:subsync/app/core/constants/app_constants.dart';
 import 'package:subsync/app/core/theme/app_sizes.dart';
+import 'widgets/bento_illustration.dart';
 import 'onboarding_controller.dart';
 
 class OnboardingView extends GetView<OnboardingController> {
@@ -15,6 +16,7 @@ class OnboardingView extends GetView<OnboardingController> {
     Get.put(OnboardingController());
     
     return Scaffold(
+      backgroundColor: const Color(0xFFFBF8FF), // match HTML background
       appBar: AppBar(
         title: Text(AppConstants.appName, style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: AppSizes.font20)),
         backgroundColor: Colors.transparent,
@@ -37,7 +39,7 @@ class OnboardingView extends GetView<OnboardingController> {
                   _buildPage(
                     title: 'Track All Your Subscriptions',
                     description: 'Sync your bank account and automatically detect all your recurring payments in one place.',
-                    icon: Icons.sync,
+                    illustration: const BentoIllustration(),
                   ),
                   _buildPage(
                     title: 'Never Miss a Renewal',
@@ -77,13 +79,13 @@ class OnboardingView extends GetView<OnboardingController> {
     );
   }
 
-  Widget _buildPage({required String title, required String description, required IconData icon}) {
+  Widget _buildPage({required String title, required String description, Widget? illustration, IconData? icon}) {
     return Padding(
-      padding: EdgeInsets.all(AppSizes.p40),
+      padding: EdgeInsets.all(AppSizes.p24),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 100.w, color: AppColors.secondary),
+          if (illustration != null) illustration else if (icon != null) Icon(icon, size: 100.w, color: AppColors.secondary),
           AppSizes.gapH40,
           Text(title, style: AppTextStyles.headline.copyWith(fontSize: 22.sp), textAlign: TextAlign.center),
           AppSizes.gapH16,
