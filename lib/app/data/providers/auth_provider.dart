@@ -72,4 +72,18 @@ class AuthProvider {
       },
     );
   }
+
+  Future<Response> socialLogin(String idToken, String provider) async {
+    return await _apiClient.post(
+      '/auth/social-login',
+      data: {
+        'idToken': idToken,
+        'provider': provider,
+      },
+    );
+  }
+
+  Future<Response> logout() async {
+    return await _apiClient.post('/auth/logout');
+  }
 }

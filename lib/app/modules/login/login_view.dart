@@ -113,7 +113,7 @@ class LoginView extends GetView<LoginController> {
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () {},
+                      onPressed: controller.signInWithGoogle,
                       icon: const Icon(Icons.g_mobiledata, color: AppColors.black),
                       label: const Text('Google', style: TextStyle(color: AppColors.black)),
                       style: OutlinedButton.styleFrom(
