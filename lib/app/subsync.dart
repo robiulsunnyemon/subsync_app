@@ -12,7 +12,7 @@ class SubSync extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(390, 844), // iPhone 13/14 Pro base design size
+      designSize: const Size(390, 844),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
@@ -22,8 +22,8 @@ class SubSync extends StatelessWidget {
           getPages: AppPages.routes,
           theme: AppTheme.lightTheme,
           debugShowCheckedModeBanner: false,
-          defaultTransition: Transition.fadeIn, // Smooth iOS style transition
-          transitionDuration: const Duration(milliseconds: 300), // Ensures it's smooth
+          defaultTransition: Transition.fadeIn,
+          transitionDuration: const Duration(milliseconds: 300)
         );
       },
     );
