@@ -56,15 +56,21 @@ class ConnectBankView extends GetView<BankConnectionController> {
               AppSizes.gapH16,
               
               // Filter Chips
-              Row(
-                children: [
-                  _buildChip('All Countries', true),
-                  AppSizes.gapW8,
-                  _buildChip('UK', false),
-                  AppSizes.gapW8,
-                  _buildChip('Germany', false),
-                ],
-              ),
+              Obx(() => SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: controller.countries.map((country) {
+                    bool isSelected = controller.selectedCountry.value == country['code'];
+                    return Padding(
+                      padding: EdgeInsets.only(right: 8.w),
+                      child: GestureDetector(
+                        onTap: () => controller.changeCountry(country['code'] as String),
+                        child: _buildChip(country['name'] as String, isSelected),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              )),
               AppSizes.gapH16,
 
               // Security Banner
@@ -97,90 +103,101 @@ class ConnectBankView extends GetView<BankConnectionController> {
               ),
               AppSizes.gapH24,
 
-              // Popular Banks
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Popular Banks', style: AppTextStyles.h2),
-                  Text('6 institutions found', style: AppTextStyles.label.copyWith(fontSize: 10.sp)),
-                ],
-              ),
-              AppSizes.gapH16,
-              
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16.w,
-                  mainAxisSpacing: 16.h,
-                  childAspectRatio: 1.2,
-                ),
-                itemCount: controller.popularBanks.length,
-                itemBuilder: (context, index) {
-                  var bank = controller.popularBanks[index];
-                  return GestureDetector(
-                    onTap: () => controller.connectBank(bank['name'] as String),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(color: AppColors.tertiary),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 40.w,
-                            height: 40.w,
-                            decoration: BoxDecoration(
-                              color: AppColors.tertiary,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(child: Text(bank['icon'] as String, style: TextStyle(fontWeight: FontWeight.bold))),
-                          ),
-                          AppSizes.gapH8,
-                          Text(bank['name'] as String, style: AppTextStyles.h3),
-                          Text(bank['type'] as String, style: AppTextStyles.label.copyWith(fontSize: 10.sp)),
-                        ],
-                      ),
+              Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Popular Banks
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Popular Banks', style: AppTextStyles.h2),
+                        Text('${controller.allInstitutions.fold(0, (sum, section) => sum + (section['banks'] as List).length)} institutions found', style: AppTextStyles.label.copyWith(fontSize: 10.sp)),
+                      ],
                     ),
-                  );
-                },
-              ),
-              
-              AppSizes.gapH24,
-              Text('All Institutions', style: AppTextStyles.h2),
-              AppSizes.gapH16,
-              
-              // All Institutions List
-              Obx(() => Column(
-                children: controller.allInstitutions.map((section) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
-                        color: AppColors.tertiary,
-                        child: Text(section['letter'] as String, style: AppTextStyles.label),
+                    AppSizes.gapH16,
+                    
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16.w,
+                        mainAxisSpacing: 16.h,
+                        childAspectRatio: 1.2,
                       ),
-                      ...((section['banks'] as List<String>).map((bankName) => ListTile(
-                            tileColor: AppColors.white,
-                            leading: Container(
-                              width: 32.w,
-                              height: 32.w,
-                              decoration: BoxDecoration(color: AppColors.tertiary, shape: BoxShape.circle),
-                              child: Center(child: Text((section['letter'] as String))),
+                      itemCount: controller.popularBanks.length,
+                      itemBuilder: (context, index) {
+                        var bank = controller.popularBanks[index];
+                        return GestureDetector(
+                          onTap: () => controller.connectBank(bank['name'] as String),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.white,
+                              borderRadius: BorderRadius.circular(12.r),
+                              border: Border.all(color: AppColors.tertiary),
                             ),
-                            title: Text(bankName, style: AppTextStyles.bodyText),
-                            trailing: Icon(Icons.chevron_right, color: AppColors.neutral),
-                            onTap: () => controller.connectBank(bankName),
-                          )).toList()),
-                    ],
-                  );
-                }).toList(),
-              )),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 40.w,
+                                  height: 40.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.tertiary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(child: Text(bank['icon'] as String, style: TextStyle(fontWeight: FontWeight.bold))),
+                                ),
+                                AppSizes.gapH8,
+                                Text(bank['name'] as String, style: AppTextStyles.h3, textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                Text(bank['type'] as String, style: AppTextStyles.label.copyWith(fontSize: 10.sp)),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    
+                    AppSizes.gapH24,
+                    Text('All Institutions', style: AppTextStyles.h2),
+                    AppSizes.gapH16,
+                    
+                    // All Institutions List
+                    Column(
+                      children: controller.allInstitutions.map((section) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
+                              color: AppColors.tertiary,
+                              child: Text(section['letter'] as String, style: AppTextStyles.label),
+                            ),
+                            ...((section['banks'] as List<dynamic>).map((bank) => ListTile(
+                                  tileColor: AppColors.white,
+                                  leading: Container(
+                                    width: 32.w,
+                                    height: 32.w,
+                                    decoration: BoxDecoration(color: AppColors.tertiary, shape: BoxShape.circle),
+                                    child: Center(child: Text((bank['icon'] as String))),
+                                  ),
+                                  title: Text(bank['name'] as String, style: AppTextStyles.bodyText),
+                                  trailing: Icon(Icons.chevron_right, color: AppColors.neutral),
+                                  onTap: () => controller.connectBank(bank['name'] as String),
+                                )).toList()),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                );
+              }),
             ],
           ),
         ),

@@ -9,21 +9,83 @@ class BankConnectionController extends GetxController {
   final BankProvider _provider = BankProvider();
   final searchQuery = ''.obs;
   
-  final popularBanks = [
-    {'name': 'Revolut', 'type': 'Global Fintech', 'icon': 'R'},
-    {'name': 'Monzo', 'type': 'United Kingdom', 'icon': 'M'},
-    {'name': 'Wise', 'type': 'International', 'icon': 'W'},
-    {'name': 'N26', 'type': 'Germany', 'icon': 'N'},
-    {'name': 'Barclays', 'type': 'United Kingdom', 'icon': 'B'},
-    {'name': 'Deutsche Bank', 'type': 'Germany', 'icon': 'D'},
+  final isLoading = false.obs;
+  final selectedCountry = 'GB'.obs;
+
+  final countries = [
+    {'code': 'GB', 'name': 'United Kingdom'},
+    {'code': 'DE', 'name': 'Germany'},
+    {'code': 'FR', 'name': 'France'},
+    {'code': 'ES', 'name': 'Spain'},
+    {'code': 'IT', 'name': 'Italy'},
+    {'code': 'NL', 'name': 'Netherlands'},
+    {'code': 'SE', 'name': 'Sweden'},
   ].obs;
 
-  final allInstitutions = [
-    {'letter': 'A', 'banks': ['ABN AMRO', 'Allied Irish Banks (AIB)']},
-    {'letter': 'B', 'banks': ['Banco Santander', 'BNP Paribas']},
-    {'letter': 'C', 'banks': ['Crédit Agricole', 'Commerzbank']},
-    {'letter': 'D', 'banks': ['Danske Bank']},
-  ].obs;
+  final popularBanks = [].obs;
+  final allInstitutions = [].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchBanksForCountry(selectedCountry.value);
+  }
+
+  void changeCountry(String code) {
+    selectedCountry.value = code;
+    fetchBanksForCountry(code);
+  }
+
+  Future<void> fetchBanksForCountry(String countryCode) async {
+    try {
+      isLoading.value = true;
+      final response = await _provider.getProviders(countryCode);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        
+        // Group banks alphabetically
+        Map<String, List<Map<String, dynamic>>> grouped = {};
+        for (var item in data) {
+          String name = item['displayName'] ?? item['name'] ?? 'Unknown';
+          String letter = name[0].toUpperCase();
+          if (!grouped.containsKey(letter)) {
+            grouped[letter] = [];
+          }
+          grouped[letter]!.add({
+            'name': name,
+            'type': item['type'] ?? 'Bank',
+            'icon': item['icon'] ?? letter,
+          });
+        }
+        
+        // Sort and map to expected format
+        var sortedKeys = grouped.keys.toList()..sort();
+        allInstitutions.value = sortedKeys.map((k) => {
+          'letter': k,
+          'banks': grouped[k],
+        }).toList();
+
+        // Just take the first few as popular for now
+        if (data.length > 6) {
+           popularBanks.value = data.sublist(0, 6).map((item) => {
+             'name': item['displayName'] ?? item['name'],
+             'type': item['type'] ?? 'Bank',
+             'icon': item['icon'] ?? (item['displayName'] ?? item['name'])[0].toUpperCase(),
+           }).toList();
+        } else {
+           popularBanks.value = data.map((item) => {
+             'name': item['displayName'] ?? item['name'],
+             'type': item['type'] ?? 'Bank',
+             'icon': item['icon'] ?? (item['displayName'] ?? item['name'])[0].toUpperCase(),
+           }).toList();
+        }
+      }
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to fetch banks for this country');
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   void connectBank(String bankName) {
     // Navigate to auth screen for this bank

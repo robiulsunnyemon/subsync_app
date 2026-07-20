@@ -10,4 +10,11 @@ class BankProvider {
       queryParameters: {'provider': provider},
     );
   }
+
+  Future<Response> getProviders(String countryCode) async {
+    return await _apiClient.get(
+      '/banks/providers',
+      queryParameters: {'countryCode': countryCode},
+    );
+  }
 }
