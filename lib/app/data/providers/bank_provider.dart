@@ -40,4 +40,8 @@ class BankProvider {
   Future<Response> disconnectBank(String id) async {
     return await _apiClient.delete('/banks/$id');
   }
+
+  Future<Response> getTransactions() async {
+    return await _apiClient.get('/banks/transactions');
+  }
 }
