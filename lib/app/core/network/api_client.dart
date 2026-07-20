@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:get/get.dart' hide Response;
+import 'package:get_storage/get_storage.dart';
 import 'package:subsync/app/core/constants/api_constants.dart';
 
 class ApiClient {
@@ -22,15 +24,19 @@ class ApiClient {
 
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        // TODO: Add token to headers if available in local storage
-        // String? token = await getAuthToken();
-        // if (token != null) {
-        //   options.headers['Authorization'] = 'Bearer $token';
-        // }
+        final box = GetStorage();
+        String? token = box.read('token')?.toString();
+        if (token != null && token.isNotEmpty) {
+          options.headers['Authorization'] = 'Bearer $token';
+        }
         return handler.next(options);
       },
       onError: (DioException e, handler) {
-        // Handle global errors here (e.g., token expiration -> logout)
+        if (e.response?.statusCode == 401 || e.response?.statusCode == 403) {
+          final box = GetStorage();
+          box.remove('token');
+          Get.offAllNamed('/login');
+        }
         return handler.next(e);
       },
     ));

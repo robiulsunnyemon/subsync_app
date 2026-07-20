@@ -264,7 +264,7 @@ class _GlassCard extends StatelessWidget {
   }
 }
 
-extension on Widget {
+extension BlurredWidget on Widget {
   Widget blurred({required double sigma}) {
     return ImageFilterWidget(sigma: sigma, child: this);
   }

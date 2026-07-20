@@ -11,6 +11,14 @@ abstract class Routes {
   static const OTP = _Paths.OTP;
   static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
   static const RESET_PASSWORD = _Paths.RESET_PASSWORD;
+  static const DASHBOARD = _Paths.DASHBOARD;
+  static const BANK_CONNECTION = _Paths.BANK_CONNECTION;
+  static const BANK_CONNECTION_AUTH = _Paths.BANK_CONNECTION_AUTH;
+  static const SUBSCRIPTIONS = _Paths.SUBSCRIPTIONS;
+  static const SUBSCRIPTION_DETAILS = _Paths.SUBSCRIPTION_DETAILS;
+  static const TAX_REPORT = _Paths.TAX_REPORT;
+  static const SETTINGS = _Paths.SETTINGS;
+  static const NOTIFICATION_SETTINGS = _Paths.NOTIFICATION_SETTINGS;
 }
 
 abstract class _Paths {
@@ -23,4 +31,12 @@ abstract class _Paths {
   static const OTP = '/otp';
   static const FORGOT_PASSWORD = '/forgot-password';
   static const RESET_PASSWORD = '/reset-password';
+  static const DASHBOARD = '/dashboard';
+  static const BANK_CONNECTION = '/bank-connection';
+  static const BANK_CONNECTION_AUTH = '/bank-connection/auth';
+  static const SUBSCRIPTIONS = '/subscriptions';
+  static const SUBSCRIPTION_DETAILS = '/subscriptions/details';
+  static const TAX_REPORT = '/tax-report';
+  static const SETTINGS = '/settings';
+  static const NOTIFICATION_SETTINGS = '/settings/notifications';
 }

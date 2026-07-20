@@ -5,6 +5,7 @@ import 'package:subsync/app/data/providers/auth_provider.dart';
 import 'package:subsync/app/core/utils/custom_snackbar.dart';
 import 'package:dio/dio.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:get_storage/get_storage.dart';
 
 class LoginController extends GetxController {
   final emailController = TextEditingController();
@@ -45,9 +46,12 @@ class LoginController extends GetxController {
       );
       
       if(response.statusCode == 200) {
-        // Handle token storage here
+        final box = GetStorage();
+        if (response.data != null && response.data['token'] != null) {
+          box.write('token', response.data['token']);
+        }
         CustomSnackbar.showSuccess('Success', 'Login successful');
-        Get.offAllNamed(Routes.HOME);
+        Get.offAllNamed(Routes.DASHBOARD);
       }
     } catch (e) {
       String errorMessage = 'Invalid credentials or server error';
@@ -91,8 +95,12 @@ class LoginController extends GetxController {
           debugPrint("Backend response: ${response.statusCode} - ${response.data}");
           
           if (response.statusCode == 200) {
+            final box = GetStorage();
+            if (response.data != null && response.data['token'] != null) {
+              box.write('token', response.data['token']);
+            }
             CustomSnackbar.showSuccess('Success', 'Google Login successful');
-            Get.offAllNamed(Routes.HOME);
+            Get.offAllNamed(Routes.DASHBOARD);
           }
         } else {
           debugPrint("ID Token is null!");

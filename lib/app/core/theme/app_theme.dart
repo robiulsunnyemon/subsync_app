@@ -43,14 +43,14 @@ class AppTheme {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.neutral.withOpacity(0.3)),
+        borderSide: BorderSide(color: AppColors.neutral.withValues(alpha: 0.3)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(color: AppColors.primary),
       ),
       labelStyle: AppTextStyles.label,
-      hintStyle: AppTextStyles.body.copyWith(color: AppColors.neutral.withOpacity(0.5)),
+      hintStyle: AppTextStyles.body.copyWith(color: AppColors.neutral.withValues(alpha: 0.5)),
     ),
   );
 }

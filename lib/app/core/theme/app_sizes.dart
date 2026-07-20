@@ -7,8 +7,11 @@ class AppSizes {
   static double p8 = 8.0.w;
   static double p12 = 12.0.w;
   static double p16 = 16.0.w;
+  static double padding16 = 16.0.w; // Alias
   static double p20 = 20.0.w;
+  static double padding20 = 20.0.w; // Alias
   static double p24 = 24.0.w;
+  static double padding24 = 24.0.w; // Alias
   static double p32 = 32.0.w;
   static double p40 = 40.0.w;
   static double p48 = 48.0.w;
