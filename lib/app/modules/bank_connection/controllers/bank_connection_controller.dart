@@ -182,12 +182,19 @@ class BankConnectionController extends GetxController {
         debugPrint("Launching Bank Auth URL: $authUrl");
         
         final uri = Uri.parse(authUrl);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        try {
+          await launchUrl(
+            uri,
+            mode: LaunchMode.externalApplication,
+          );
           // After this, Tink will redirect back via the deep link
-          // which is handled by _handleDeepLinkCallback()
-        } else {
-          CustomSnackbar.showError('Error', 'Could not open the bank authorization page.');
+        } catch (e) {
+          // fallback to platformDefault
+          try {
+            await launchUrl(uri, mode: LaunchMode.platformDefault);
+          } catch (e2) {
+            CustomSnackbar.showError('Error', 'Could not open the bank authorization page. Please ensure a browser is installed.');
+          }
         }
       }
     } on DioException catch (e) {
