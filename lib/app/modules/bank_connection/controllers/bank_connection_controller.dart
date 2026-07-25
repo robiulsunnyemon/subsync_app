@@ -63,10 +63,17 @@ class BankConnectionController extends GetxController {
   }
 
   void _handleDeepLinkCallback(Uri uri) async {
+    debugPrint('*** SUBSYNC DEEP LINK CALLBACK RECEIVED ***');
+    debugPrint('Full Deep Link URI: $uri');
+    debugPrint('Query Parameters Map: ${uri.queryParameters}');
+
     final code = uri.queryParameters['code'];
     final credentialsId = uri.queryParameters['credentialsId'];
 
+    debugPrint('Extracted parameters: code=$code, credentialsId=$credentialsId');
+
     if (code == null && credentialsId == null) {
+      debugPrint('Error: Neither code nor credentialsId found in the callback query parameters.');
       CustomSnackbar.showError('Error', 'Bank connection failed. No code received.');
       return;
     }
@@ -172,14 +179,21 @@ class BankConnectionController extends GetxController {
   // ─────────────────────────────────────────────
   void agreeAndContinue() async {
     try {
+      debugPrint('*** INITIATING BANK CONNECTION ***');
+      debugPrint('Selected Country: ${selectedCountry.value}');
+      debugPrint('Selected Bank Name: ${selectedBankName.value}');
+
       Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
       
       final response = await _provider.getAuthLink('TINK', market: selectedCountry.value);
       Get.back(); // close dialog
       
+      debugPrint('getAuthLink API Response Status: ${response.statusCode}');
+      debugPrint('getAuthLink API Response Data: ${response.data}');
+
       if (response.statusCode == 200 && response.data['authUrl'] != null) {
         String authUrl = response.data['authUrl'];
-        debugPrint("Launching Bank Auth URL: $authUrl");
+        debugPrint("Launching Bank Auth URL in External Browser: $authUrl");
         
         final uri = Uri.parse(authUrl);
         try {
