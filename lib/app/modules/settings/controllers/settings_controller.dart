@@ -5,6 +5,8 @@ import 'package:get_storage/get_storage.dart' as get_storage;
 import 'package:dio/dio.dart';
 import 'package:subsync/app/core/utils/custom_snackbar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:subsync/app/modules/dashboard/controllers/dashboard_controller.dart';
+import 'package:subsync/app/modules/tax_report/controllers/tax_report_controller.dart';
 
 class SettingsController extends GetxController {
   
@@ -82,6 +84,13 @@ class SettingsController extends GetxController {
         businessName.value = businessNameInput.trim();
         vatNumber.value = vatNumberInput.trim();
         CustomSnackbar.showSuccess('Success', 'Profile and business details updated successfully.');
+        
+        if (Get.isRegistered<DashboardController>()) {
+          Get.find<DashboardController>().fetchDashboardData();
+        }
+        if (Get.isRegistered<TaxReportController>()) {
+          Get.find<TaxReportController>().fetchReport();
+        }
       } else {
         CustomSnackbar.showError('Error', 'Failed to update profile');
       }
@@ -135,6 +144,13 @@ class SettingsController extends GetxController {
           profileImage.value = newUrl;
         }
         CustomSnackbar.showSuccess('Success', 'Profile picture updated successfully');
+
+        if (Get.isRegistered<DashboardController>()) {
+          Get.find<DashboardController>().fetchDashboardData();
+        }
+        if (Get.isRegistered<TaxReportController>()) {
+          Get.find<TaxReportController>().fetchReport();
+        }
       } else {
         CustomSnackbar.showError('Error', 'Failed to upload image');
       }
