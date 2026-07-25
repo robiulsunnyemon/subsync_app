@@ -4,24 +4,33 @@ import 'package:subsync/app/core/network/api_client.dart';
 class TaxReportProvider {
   final ApiClient _apiClient = ApiClient();
 
-  Future<Response> getReportData(String year) async {
+  Future<Response> getReportData(String startDate, String endDate) async {
     return await _apiClient.get(
       '/reports/tax',
-      queryParameters: {'year': year},
+      queryParameters: {
+        'startDate': startDate,
+        'endDate': endDate,
+      },
     );
   }
 
-  Future<Response> downloadTaxReportCsv(String year) async {
+  Future<Response> downloadTaxReportCsv(String startDate, String endDate) async {
     return await _apiClient.get(
       '/reports/tax/csv',
-      queryParameters: {'year': year},
+      queryParameters: {
+        'startDate': startDate,
+        'endDate': endDate,
+      },
     );
   }
 
-  Future<Response> downloadTaxReportPdf(String year) async {
+  Future<Response> downloadTaxReportPdf(String startDate, String endDate) async {
     return await _apiClient.get(
       '/reports/tax/pdf',
-      queryParameters: {'year': year},
+      queryParameters: {
+        'startDate': startDate,
+        'endDate': endDate,
+      },
       options: Options(responseType: ResponseType.bytes),
     );
   }

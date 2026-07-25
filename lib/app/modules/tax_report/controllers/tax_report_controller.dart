@@ -11,7 +11,10 @@ class TaxReportController extends GetxController {
   
   final TaxReportProvider _provider = TaxReportProvider();
 
-  final selectedYear = DateTime.now().year.toString().obs;
+  late final Rx<DateTime> startDate;
+  late final Rx<DateTime> endDate;
+
+  final selectedPreset = 'Calendar Year'.obs;
   
   final totalBusinessDeductions = 0.0.obs;
   final isLoading = true.obs;
@@ -21,13 +24,25 @@ class TaxReportController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    final now = DateTime.now();
+    startDate = DateTime(now.year, 1, 1).obs;
+    endDate = DateTime(now.year, 12, 31).obs;
     fetchReport();
+  }
+
+  String formatDateApi(DateTime dt) {
+    String month = dt.month.toString().padLeft(2, '0');
+    String day = dt.day.toString().padLeft(2, '0');
+    return '${dt.year}-$month-$day';
   }
 
   Future<void> fetchReport() async {
     isLoading.value = true;
     try {
-      final response = await _provider.getReportData(selectedYear.value);
+      final sStr = formatDateApi(startDate.value);
+      final eStr = formatDateApi(endDate.value);
+      
+      final response = await _provider.getReportData(sStr, eStr);
       if (response.statusCode == 200) {
         final data = response.data;
         totalBusinessDeductions.value = (data['totalDeductions'] ?? 0.0).toDouble();
@@ -40,9 +55,39 @@ class TaxReportController extends GetxController {
     }
   }
 
-  void changeYear(String year) {
-    if (selectedYear.value != year) {
-      selectedYear.value = year;
+  void setCalendarYear() {
+    final now = DateTime.now();
+    startDate.value = DateTime(now.year, 1, 1);
+    endDate.value = DateTime(now.year, 12, 31);
+    selectedPreset.value = 'Calendar Year';
+    fetchReport();
+  }
+
+  void setUKTaxYear() {
+    final now = DateTime.now();
+    int year = now.year;
+    if (now.month < 4 || (now.month == 4 && now.day < 6)) {
+      year = year - 1;
+    }
+    startDate.value = DateTime(year, 4, 6);
+    endDate.value = DateTime(year + 1, 4, 5);
+    selectedPreset.value = 'UK Tax Year';
+    fetchReport();
+  }
+
+  Future<void> selectCustomDateRange(BuildContext context) async {
+    final DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      initialDateRange: DateTimeRange(start: startDate.value, end: endDate.value),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+      helpText: 'Select Tax Period Range',
+    );
+
+    if (picked != null) {
+      startDate.value = picked.start;
+      endDate.value = picked.end;
+      selectedPreset.value = 'Custom';
       fetchReport();
     }
   }
@@ -68,13 +113,16 @@ class TaxReportController extends GetxController {
         barrierDismissible: false,
       );
 
-      final response = await _provider.downloadTaxReportCsv(selectedYear.value);
+      final sStr = formatDateApi(startDate.value);
+      final eStr = formatDateApi(endDate.value);
+
+      final response = await _provider.downloadTaxReportCsv(sStr, eStr);
       if (Get.isDialogOpen ?? false) Get.back();
 
       if (response.statusCode == 200 && response.data != null) {
         final String csvContent = response.data.toString();
         final Directory dir = await getApplicationDocumentsDirectory();
-        final String filePath = '${dir.path}/SubSync_Tax_Report_${selectedYear.value}.csv';
+        final String filePath = '${dir.path}/SubSync_Tax_Report_${sStr}_to_${eStr}.csv';
         
         final File file = File(filePath);
         await file.writeAsString(csvContent);
@@ -106,7 +154,7 @@ class TaxReportController extends GetxController {
                 children: [
                   CircularProgressIndicator(),
                   SizedBox(height: 16),
-                  Text('Generating Annual PDF Tax Report...'),
+                  Text('Generating PDF Tax Report...'),
                 ],
               ),
             ),
@@ -115,13 +163,16 @@ class TaxReportController extends GetxController {
         barrierDismissible: false,
       );
 
-      final response = await _provider.downloadTaxReportPdf(selectedYear.value);
+      final sStr = formatDateApi(startDate.value);
+      final eStr = formatDateApi(endDate.value);
+
+      final response = await _provider.downloadTaxReportPdf(sStr, eStr);
       if (Get.isDialogOpen ?? false) Get.back();
 
       if (response.statusCode == 200 && response.data != null) {
         final List<int> bytes = List<int>.from(response.data);
         final Directory dir = await getApplicationDocumentsDirectory();
-        final String filePath = '${dir.path}/SubSync_Annual_Tax_Report_${selectedYear.value}.pdf';
+        final String filePath = '${dir.path}/SubSync_Tax_Report_${sStr}_to_${eStr}.pdf';
         
         final File file = File(filePath);
         await file.writeAsBytes(bytes);

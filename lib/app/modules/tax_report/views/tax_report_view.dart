@@ -10,7 +10,11 @@ import '../../../core/theme/app_sizes.dart';
 class TaxReportView extends GetView<TaxReportController> {
   const TaxReportView({super.key});
 
-  final List<String> availableYears = const ['2026', '2025', '2024', '2023'];
+  String _formatDisplayDate(DateTime dt) {
+    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    String day = dt.day.toString().padLeft(2, '0');
+    return '$day ${months[dt.month - 1]} ${dt.year}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,51 +39,74 @@ class TaxReportView extends GetView<TaxReportController> {
           return const Center(child: CircularProgressIndicator());
         }
 
+        final startDisplay = _formatDisplayDate(controller.startDate.value);
+        final endDisplay = _formatDisplayDate(controller.endDate.value);
+
         return SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(AppSizes.padding16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header & Interactive Year Selector
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('TAX YEAR', style: AppTextStyles.label.copyWith(color: AppColors.neutral)),
-                    PopupMenuButton<String>(
-                      onSelected: controller.changeYear,
-                      itemBuilder: (context) {
-                        return availableYears.map((year) {
-                          return PopupMenuItem<String>(
-                            value: year,
-                            child: Text(
-                              year,
-                              style: TextStyle(
-                                fontWeight: controller.selectedYear.value == year ? FontWeight.bold : FontWeight.normal,
-                                color: controller.selectedYear.value == year ? AppColors.primary : AppColors.neutral,
+                // TAX PERIOD Section
+                Text('TAX PERIOD', style: AppTextStyles.label.copyWith(color: AppColors.neutral)),
+                AppSizes.gapH8,
+
+                // Interactive Date Range Selector Banner
+                GestureDetector(
+                  onTap: () => controller.selectCustomDateRange(context),
+                  child: Container(
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.03),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.calendar_month_outlined, color: AppColors.primary, size: 22.sp),
+                        AppSizes.gapW12,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '$startDisplay   ➔   $endDisplay',
+                                style: AppTextStyles.h3.copyWith(color: AppColors.primary, fontSize: 13.sp),
                               ),
-                            ),
-                          );
-                        }).toList();
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(20.r),
-                          border: Border.all(color: AppColors.tertiary),
+                              SizedBox(height: 2.h),
+                              Text(
+                                'Tap to change custom date range',
+                                style: TextStyle(fontSize: 10.sp, color: AppColors.neutral),
+                              ),
+                            ],
+                          ),
                         ),
-                        child: Row(
-                          children: [
-                            Obx(() => Text(controller.selectedYear.value, style: AppTextStyles.h3)),
-                            Icon(Icons.arrow_drop_down, color: AppColors.primary),
-                          ],
-                        ),
-                      ),
-                    )
+                        Icon(Icons.edit_calendar_outlined, color: AppColors.primary, size: 18.sp),
+                      ],
+                    ),
+                  ),
+                ),
+                AppSizes.gapH12,
+
+                // Quick Preset Chips (Calendar Year, UK Tax Year, Custom)
+                Row(
+                  children: [
+                    _buildPresetChip('Calendar Year', controller.setCalendarYear),
+                    SizedBox(width: 8.w),
+                    _buildPresetChip('UK Tax Year', controller.setUKTaxYear),
+                    SizedBox(width: 8.w),
+                    _buildPresetChip('Custom', () => controller.selectCustomDateRange(context)),
                   ],
                 ),
-                AppSizes.gapH24,
+                AppSizes.gapH20,
                 
                 // Total Deductions Card
                 Container(
@@ -117,7 +144,7 @@ class TaxReportView extends GetView<TaxReportController> {
                             AppSizes.gapW8,
                             Expanded(
                               child: Text(
-                                'These are automatically identified based on your "Business" categorization.',
+                                'Calculated for period: $startDisplay to $endDisplay based on "Business" subscriptions.',
                                 style: TextStyle(fontSize: 10.sp, color: AppColors.primary),
                               ),
                             )
@@ -127,12 +154,12 @@ class TaxReportView extends GetView<TaxReportController> {
                     ],
                   ),
                 ),
-                AppSizes.gapH32,
+                AppSizes.gapH24,
 
                 Text('Eligible Expenses', style: AppTextStyles.h2),
                 AppSizes.gapH16,
                 
-                // List of Expenses or Empty state
+                // List of Expenses or Empty State
                 Obx(() {
                   if (controller.businessSubscriptions.isEmpty) {
                     return Container(
@@ -147,12 +174,12 @@ class TaxReportView extends GetView<TaxReportController> {
                           Icon(Icons.business_center_outlined, size: 40.sp, color: AppColors.neutral),
                           AppSizes.gapH8,
                           Text(
-                            'No business deductions for ${controller.selectedYear.value}',
+                            'No business deductions found',
                             style: AppTextStyles.h3.copyWith(color: AppColors.neutral),
                           ),
                           AppSizes.gapH4,
                           Text(
-                            'Categorize subscriptions as "Business" to claim tax deductions.',
+                            'No business expenses fall within the selected period ($startDisplay - $endDisplay).',
                             textAlign: TextAlign.center,
                             style: AppTextStyles.bodyText.copyWith(fontSize: 12.sp, color: AppColors.neutral),
                           ),
@@ -197,7 +224,7 @@ class TaxReportView extends GetView<TaxReportController> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text('€${annualTotal.toStringAsFixed(2)}', style: AppTextStyles.h3),
-                            Text('Total Year', style: AppTextStyles.label.copyWith(fontSize: 10.sp)),
+                            Text('Period Total', style: AppTextStyles.label.copyWith(fontSize: 10.sp)),
                           ],
                         ),
                       );
@@ -253,5 +280,30 @@ class TaxReportView extends GetView<TaxReportController> {
         ),
       ),
     );
+  }
+
+  Widget _buildPresetChip(String label, VoidCallback onTap) {
+    return Obx(() {
+      final bool isSelected = controller.selectedPreset.value == label;
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+          decoration: BoxDecoration(
+            color: isSelected ? AppColors.primary : AppColors.white,
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(color: isSelected ? AppColors.primary : AppColors.tertiary),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 10.sp,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              color: isSelected ? AppColors.white : AppColors.neutral,
+            ),
+          ),
+        ),
+      );
+    });
   }
 }
