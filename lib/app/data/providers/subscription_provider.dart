@@ -19,4 +19,11 @@ class SubscriptionProvider {
   Future<Response> updateCategory(String id, String type) async {
     return await _apiClient.put('/subscriptions/$id/category?type=$type');
   }
+
+  Future<Response> downloadInvoice(String id) async {
+    return await _apiClient.get(
+      '/subscriptions/$id/invoice',
+      options: Options(responseType: ResponseType.bytes),
+    );
+  }
 }

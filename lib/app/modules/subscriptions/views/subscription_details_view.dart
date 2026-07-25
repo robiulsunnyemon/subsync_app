@@ -248,7 +248,12 @@ class _SubscriptionDetailsViewState extends State<SubscriptionDetailsView> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        controller.downloadAndOpenInvoice(
+                          _sub['id']?.toString(),
+                          _sub['name']?.toString() ?? 'Subscription',
+                        );
+                      },
                       icon: Icon(Icons.download, color: AppColors.primary),
                       label: Text('Download Invoices', style: TextStyle(color: AppColors.primary)),
                       style: OutlinedButton.styleFrom(

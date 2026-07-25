@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:subsync/app/data/providers/subscription_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:subsync/app/core/utils/custom_snackbar.dart';
 import 'package:subsync/app/modules/dashboard/controllers/dashboard_controller.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
 
 class SubscriptionsController extends GetxController {
   
@@ -117,6 +120,59 @@ class SubscriptionsController extends GetxController {
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to update category');
       return false;
+    }
+  }
+
+  Future<void> downloadAndOpenInvoice(String? subscriptionId, String merchantName) async {
+    if (subscriptionId == null || subscriptionId.toString().isEmpty) {
+      CustomSnackbar.showError('Error', 'Invalid subscription ID');
+      return;
+    }
+
+    try {
+      Get.dialog(
+        const Center(
+          child: Card(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('Generating Tax Invoice...'),
+                ],
+              ),
+            ),
+          ),
+        ),
+        barrierDismissible: false,
+      );
+
+      final response = await _provider.downloadInvoice(subscriptionId.toString());
+      if (Get.isDialogOpen ?? false) Get.back();
+
+      if (response.statusCode == 200 && response.data != null) {
+        final List<int> bytes = List<int>.from(response.data);
+        final Directory dir = await getApplicationDocumentsDirectory();
+        final String sanitizedName = merchantName.replaceAll(RegExp(r'[^\w\s-]'), '').replaceAll(' ', '_');
+        final String filePath = '${dir.path}/SubSync_Invoice_${sanitizedName}_${subscriptionId.toString().substring(0, 8)}.pdf';
+        
+        final File file = File(filePath);
+        await file.writeAsBytes(bytes);
+
+        CustomSnackbar.showSuccess('Success', 'Invoice downloaded and saved');
+        await OpenFile.open(filePath);
+      } else {
+        CustomSnackbar.showError('Error', 'Failed to download invoice');
+      }
+    } on DioException catch (e) {
+      if (Get.isDialogOpen ?? false) Get.back();
+      String message = e.response?.data['message'] ?? 'Failed to download invoice';
+      CustomSnackbar.showError('Error', message);
+    } catch (e) {
+      if (Get.isDialogOpen ?? false) Get.back();
+      CustomSnackbar.showError('Error', 'Failed to generate invoice file');
     }
   }
 }
