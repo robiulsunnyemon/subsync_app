@@ -104,6 +104,8 @@ class TaxReportView extends GetView<TaxReportController> {
                     children: [
                       _buildPresetChip('EU / Calendar Year', controller.setCalendarYear),
                       SizedBox(width: 8.w),
+                      _buildPresetChip('Custom', () => controller.selectCustomDateRange(context)),
+                      SizedBox(width: 8.w),
                       _buildPresetChip('UK Tax Year', controller.setUKTaxYear),
                       SizedBox(width: 8.w),
                       _buildPresetChip('Q1 VAT', () => controller.setQuarter(1)),
@@ -115,8 +117,6 @@ class TaxReportView extends GetView<TaxReportController> {
                       _buildPresetChip('Q4 VAT', () => controller.setQuarter(4)),
                       SizedBox(width: 8.w),
                       _buildPresetChip('AU Tax Year', controller.setAUTaxYear),
-                      SizedBox(width: 8.w),
-                      _buildPresetChip('Custom', () => controller.selectCustomDateRange(context)),
                     ],
                   ),
                 ),
