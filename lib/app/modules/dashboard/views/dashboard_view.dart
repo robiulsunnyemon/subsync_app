@@ -21,14 +21,27 @@ class DashboardView extends GetView<DashboardController> {
         elevation: 0,
         title: Row(
           children: [
-            Container(
-              width: 32.w,
-              height: 32.h,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Icon(Icons.sync, color: AppColors.white, size: 20.sp),
+            GestureDetector(
+              onTap: controller.goToSettings,
+              child: Obx(() {
+                final imgUrl = controller.profileImage.value;
+                if (imgUrl.isNotEmpty) {
+                  return CircleAvatar(
+                    radius: 18.r,
+                    backgroundColor: AppColors.tertiary,
+                    backgroundImage: NetworkImage(imgUrl),
+                  );
+                }
+                return Container(
+                  width: 34.w,
+                  height: 34.w,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.person, color: AppColors.white, size: 20.sp),
+                );
+              }),
             ),
             AppSizes.gapW8,
             Text(

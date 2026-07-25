@@ -11,6 +11,7 @@ class DashboardController extends GetxController {
   final DashboardProvider _provider = DashboardProvider();
 
   final userName = 'User'.obs;
+  final profileImage = ''.obs;
   final totalExpense = 0.0.obs;
   final totalSavings = 0.0.obs;
   final activeSubscriptions = 0.obs;
@@ -33,6 +34,7 @@ class DashboardController extends GetxController {
       if (response.statusCode == 200) {
         final data = response.data;
         userName.value = (data['fullName'] ?? data['full_name'] ?? 'User').toString().split(' ').first;
+        profileImage.value = data['profileImage'] ?? '';
         totalExpense.value = (data['totalMonthlyExpense'] ?? 0.0).toDouble();
         totalSavings.value = (data['totalSavings'] ?? 0.0).toDouble();
         activeSubscriptions.value = data['activeSubscriptionsCount'] ?? 0;
