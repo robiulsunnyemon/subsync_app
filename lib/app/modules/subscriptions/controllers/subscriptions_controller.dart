@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:subsync/app/data/providers/subscription_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:subsync/app/core/utils/custom_snackbar.dart';
+import 'package:subsync/app/modules/dashboard/controllers/dashboard_controller.dart';
 
 class SubscriptionsController extends GetxController {
   
@@ -49,6 +50,7 @@ class SubscriptionsController extends GetxController {
             'cycle': map['cycle'] ?? 'MONTHLY',
             'nextBilling': map['nextBillingDate'] ?? '',
             'tags': [category],
+            'category': category,
             'icon': firstLetter,
             'status': statusStr,
           };
@@ -79,6 +81,9 @@ class SubscriptionsController extends GetxController {
       Get.back();
       CustomSnackbar.showSuccess('Success', 'Subscription cancelled successfully');
       fetchSubscriptions(); // Refresh list
+      if (Get.isRegistered<DashboardController>()) {
+        Get.find<DashboardController>().fetchDashboardData();
+      }
     } on DioException catch (e) {
       Get.back();
       String message = e.response?.data['message'] ?? 'Failed to cancel subscription';
@@ -101,6 +106,9 @@ class SubscriptionsController extends GetxController {
       await _provider.updateCategory(id.toString(), typeParam);
       CustomSnackbar.showSuccess('Updated', 'Category updated to $category');
       fetchSubscriptions();
+      if (Get.isRegistered<DashboardController>()) {
+        Get.find<DashboardController>().fetchDashboardData();
+      }
       return true;
     } on DioException catch (e) {
       String message = e.response?.data['message'] ?? 'Failed to update category';
