@@ -20,6 +20,12 @@ class SubSync extends StatelessWidget {
           title: AppConstants.appName,
           initialRoute: AppPages.INITIAL,
           getPages: AppPages.routes,
+          unknownRoute: GetPage(
+            name: '/notfound',
+            page: () => const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+          ),
           theme: AppTheme.lightTheme,
           debugShowCheckedModeBanner: false,
           defaultTransition: Transition.fadeIn,

@@ -124,7 +124,7 @@ class AppPages {
       page: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
     ),
     GetPage(
-      name: 'subsync://bank-callback',
+      name: '/subsync://bank-callback',
       page: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
     ),
   ];
