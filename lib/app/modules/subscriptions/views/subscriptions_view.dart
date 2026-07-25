@@ -153,7 +153,15 @@ class SubscriptionsView extends GetView<SubscriptionsController> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(sub['name'] as String, style: AppTextStyles.h3),
+                      Expanded(
+                        child: Text(
+                          sub['name'] as String,
+                          style: AppTextStyles.h3,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                      AppSizes.gapW8,
                       Text('€${(sub['amount'] as double).toStringAsFixed(2)}/mo', 
                           style: AppTextStyles.h3.copyWith(color: AppColors.primary)),
                     ],
