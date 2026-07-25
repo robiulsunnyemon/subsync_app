@@ -168,7 +168,23 @@ class SubscriptionsController extends GetxController {
       }
     } on DioException catch (e) {
       if (Get.isDialogOpen ?? false) Get.back();
-      String message = e.response?.data['message'] ?? 'Failed to download invoice';
+      String message = 'Failed to download invoice';
+      if (e.response?.data != null) {
+        try {
+          if (e.response!.data is Map) {
+            message = e.response!.data['message'] ?? message;
+          } else if (e.response!.data is List<int>) {
+            final String jsonStr = String.fromCharCodes(e.response!.data as List<int>);
+            if (jsonStr.contains('"message":')) {
+              final int start = jsonStr.indexOf('"message":') + 10;
+              final int end = jsonStr.indexOf('"', start + 1);
+              if (start > 9 && end > start) {
+                message = jsonStr.substring(start + 1, end);
+              }
+            }
+          }
+        } catch (_) {}
+      }
       CustomSnackbar.showError('Error', message);
     } catch (e) {
       if (Get.isDialogOpen ?? false) Get.back();
