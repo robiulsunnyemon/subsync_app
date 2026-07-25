@@ -25,7 +25,38 @@ class SubscriptionsController extends GetxController {
     try {
       final response = await _provider.getAllSubscriptions();
       if (response.statusCode == 200) {
-        subscriptions.value = response.data;
+        final List<dynamic> rawList = response.data;
+        subscriptions.value = rawList.map((item) {
+          final Map<String, dynamic> map = Map<String, dynamic>.from(item);
+          final String merchantName = map['merchantName'] ?? 'Subscription';
+          final String firstLetter = merchantName.isNotEmpty ? merchantName[0].toUpperCase() : 'S';
+          
+          final String backendType = map['type'] ?? 'OTHER';
+          String category = 'Other';
+          if (backendType == 'SOFTWARE') {
+            category = 'Software';
+          } else if (backendType == 'MARKETING') {
+            category = 'Marketing';
+          } else if (backendType == 'ENTERTAINMENT') {
+            category = 'Entertainment';
+          } else {
+            category = backendType.toString().substring(0, 1) + backendType.toString().substring(1).toLowerCase();
+          }
+
+          final String statusStr = map['status'] == 'ACTIVE' ? 'Active' : 'Cancelled';
+
+          return {
+            'id': map['id'],
+            'name': merchantName,
+            'amount': (map['amount'] as num?)?.toDouble() ?? 0.0,
+            'currency': map['currency'] ?? 'EUR',
+            'cycle': map['cycle'] ?? 'MONTHLY',
+            'nextBilling': map['nextBillingDate'] ?? '',
+            'tags': [category],
+            'icon': firstLetter,
+            'status': statusStr,
+          };
+        }).toList();
       }
     } on DioException catch (e) {
       String message = e.response?.data['message'] ?? 'Failed to load subscriptions';
