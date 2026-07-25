@@ -31,17 +31,7 @@ class SubscriptionsController extends GetxController {
           final String merchantName = map['merchantName'] ?? 'Subscription';
           final String firstLetter = merchantName.isNotEmpty ? merchantName[0].toUpperCase() : 'S';
           
-          final String backendType = map['type'] ?? 'OTHER';
-          String category = 'Other';
-          if (backendType == 'SOFTWARE') {
-            category = 'Software';
-          } else if (backendType == 'MARKETING') {
-            category = 'Marketing';
-          } else if (backendType == 'ENTERTAINMENT') {
-            category = 'Entertainment';
-          } else {
-            category = backendType.toString().substring(0, 1) + backendType.toString().substring(1).toLowerCase();
-          }
+          final String category = _getCategoryForMerchant(merchantName);
 
           final String statusStr = map['status'] == 'ACTIVE' ? 'Active' : 'Cancelled';
 
@@ -91,5 +81,42 @@ class SubscriptionsController extends GetxController {
       Get.back();
       CustomSnackbar.showError('Error', 'An unexpected error occurred');
     }
+  }
+
+  String _getCategoryForMerchant(String merchantName) {
+    final name = merchantName.toLowerCase();
+    
+    if (name.contains('netflix') || 
+        name.contains('spotify') || 
+        name.contains('itunes') || 
+        name.contains('youtube') || 
+        name.contains('disney') || 
+        name.contains('prime video') || 
+        name.contains('hulu')) {
+      return 'Entertainment';
+    }
+    
+    if (name.contains('aws') || 
+        name.contains('amazon') || 
+        name.contains('google cloud') || 
+        name.contains('github') || 
+        name.contains('slack') || 
+        name.contains('zoom') || 
+        name.contains('currys') || 
+        name.contains('adobe') ||
+        name.contains('jira')) {
+      return 'Software';
+    }
+    
+    if (name.contains('ads') || 
+        name.contains('facebook') || 
+        name.contains('mailchimp') || 
+        name.contains('hubspot') || 
+        name.contains('buffer') ||
+        name.contains('marketing')) {
+      return 'Marketing';
+    }
+    
+    return 'Other';
   }
 }
