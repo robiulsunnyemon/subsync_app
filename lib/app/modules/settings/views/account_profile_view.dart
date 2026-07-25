@@ -158,7 +158,7 @@ class _AccountProfileViewState extends State<AccountProfileView> {
                         ),
                       ),
                     ),
-                    AppSizes.gapH6,
+                    SizedBox(height: 6.h),
                     Obx(() => Text(
                       controller.userEmail.value,
                       style: AppTextStyles.bodyText.copyWith(color: AppColors.neutral),

@@ -150,6 +150,11 @@ class SettingsController extends GetxController {
     }
   }
 
+  void saveSettings() {
+    CustomSnackbar.showSuccess('Saved', 'Notification preferences saved successfully.');
+    Get.back();
+  }
+
   void logout() {
     final box = importGetStorage();
     box.remove('token');
