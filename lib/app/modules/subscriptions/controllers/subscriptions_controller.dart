@@ -88,4 +88,27 @@ class SubscriptionsController extends GetxController {
       CustomSnackbar.showError('Error', 'An unexpected error occurred');
     }
   }
+
+  Future<bool> updateCategory(String? id, String category) async {
+    if (id == null || id.toString().isEmpty) return true;
+    try {
+      String typeParam = 'UNCATEGORIZED';
+      if (category == 'Business') {
+        typeParam = 'BUSINESS';
+      } else if (category == 'Personal') {
+        typeParam = 'PERSONAL';
+      }
+      await _provider.updateCategory(id.toString(), typeParam);
+      CustomSnackbar.showSuccess('Updated', 'Category updated to $category');
+      fetchSubscriptions();
+      return true;
+    } on DioException catch (e) {
+      String message = e.response?.data['message'] ?? 'Failed to update category';
+      CustomSnackbar.showError('Error', message);
+      return false;
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to update category');
+      return false;
+    }
+  }
 }

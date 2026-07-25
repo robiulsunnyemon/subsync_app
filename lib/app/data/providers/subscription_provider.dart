@@ -15,4 +15,8 @@ class SubscriptionProvider {
   Future<Response> cancelSubscription(String id) async {
     return await _apiClient.put('/subscriptions/$id/cancel');
   }
+
+  Future<Response> updateCategory(String id, String type) async {
+    return await _apiClient.put('/subscriptions/$id/category?type=$type');
+  }
 }

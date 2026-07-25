@@ -7,13 +7,67 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_sizes.dart';
 
-class SubscriptionDetailsView extends GetView<SubscriptionsController> {
+class SubscriptionDetailsView extends StatefulWidget {
   const SubscriptionDetailsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final Map<String, dynamic> sub = Get.arguments ?? {};
+  State<SubscriptionDetailsView> createState() => _SubscriptionDetailsViewState();
+}
+
+class _SubscriptionDetailsViewState extends State<SubscriptionDetailsView> {
+  late String _currentCategory;
+  late Map<String, dynamic> _sub;
+  bool _isUpdating = false;
+
+  final List<Map<String, dynamic>> _categories = [
+    {'name': 'Business', 'icon': Icons.business_center_outlined, 'color': AppColors.primary},
+    {'name': 'Personal', 'icon': Icons.person_outline, 'color': AppColors.secondary},
+    {'name': 'Uncategorized', 'icon': Icons.help_outline_outlined, 'color': AppColors.neutral},
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _sub = Get.arguments ?? {};
     
+    // Determine initial category
+    if (_sub['category'] != null && _sub['category'].toString().isNotEmpty) {
+      _currentCategory = _sub['category'];
+    } else if (_sub['tags'] != null && (_sub['tags'] as List).isNotEmpty) {
+      _currentCategory = (_sub['tags'] as List).first.toString();
+    } else {
+      _currentCategory = 'Uncategorized';
+    }
+  }
+
+  Future<void> _onCategorySelected(String categoryName) async {
+    if (_currentCategory == categoryName || _isUpdating) return;
+
+    setState(() {
+      _currentCategory = categoryName;
+      _isUpdating = true;
+    });
+
+    final controller = Get.find<SubscriptionsController>();
+    final success = await controller.updateCategory(_sub['id']?.toString(), categoryName);
+
+    if (mounted) {
+      setState(() {
+        _isUpdating = false;
+        if (!success) {
+          // Revert if failed
+          _currentCategory = _sub['category'] ?? 'Uncategorized';
+        } else {
+          _sub['category'] = categoryName;
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.find<SubscriptionsController>();
+
     return Scaffold(
       backgroundColor: AppColors.tertiary,
       appBar: AppBar(
@@ -24,15 +78,9 @@ class SubscriptionDetailsView extends GetView<SubscriptionsController> {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          sub['name'] ?? 'Details',
+          _sub['name'] ?? 'Details',
           style: AppTextStyles.h3.copyWith(color: AppColors.primary),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.edit_outlined, color: AppColors.primary),
-            onPressed: () {},
-          )
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -53,31 +101,42 @@ class SubscriptionDetailsView extends GetView<SubscriptionsController> {
                     ),
                     child: Center(
                       child: Text(
-                        sub['icon'] ?? 'S',
+                        _sub['icon'] ?? 'S',
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32.sp, color: AppColors.primary),
                       ),
                     ),
                   ),
                   AppSizes.gapH16,
-                  Text(sub['name'] ?? '', style: AppTextStyles.h1),
+                  Text(_sub['name'] ?? '', style: AppTextStyles.h1),
                   AppSizes.gapH8,
-                  Text('€${(sub['amount'] ?? 0.0).toStringAsFixed(2)} / Month', style: AppTextStyles.h2.copyWith(color: AppColors.primary)),
+                  Text(
+                    '€${(_sub['amount'] ?? 0.0).toStringAsFixed(2)} / Month',
+                    style: AppTextStyles.h2.copyWith(color: AppColors.primary),
+                  ),
                   AppSizes.gapH16,
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                     decoration: BoxDecoration(
-                      color: sub['status'] == 'Active' ? AppColors.secondary.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+                      color: _sub['status'] == 'Active'
+                          ? AppColors.secondary.withOpacity(0.1)
+                          : Colors.red.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20.r),
                     ),
-                    child: Text(sub['status'] ?? '', 
-                        style: TextStyle(fontSize: 12.sp, color: sub['status'] == 'Active' ? AppColors.secondary : Colors.red, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      _sub['status'] ?? '',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: _sub['status'] == 'Active' ? AppColors.secondary : Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   )
                 ],
               ),
             ),
-            
+
             AppSizes.gapH16,
-            
+
             // Details Section
             Padding(
               padding: EdgeInsets.all(AppSizes.padding16),
@@ -88,10 +147,86 @@ class SubscriptionDetailsView extends GetView<SubscriptionsController> {
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildDetailRow('Next Billing', sub['nextBilling'] ?? ''),
+                    _buildDetailRow('Next Billing', _sub['nextBilling'] ?? ''),
                     const Divider(),
-                    _buildDetailRow('Category', 'Software / Business'),
+                    
+                    // Interactive Category Selector
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Category', style: AppTextStyles.bodyText.copyWith(color: AppColors.neutral)),
+                              if (_isUpdating)
+                                SizedBox(
+                                  width: 14.w,
+                                  height: 14.w,
+                                  child: const CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                            ],
+                          ),
+                          AppSizes.gapH12,
+                          Row(
+                            children: _categories.map((cat) {
+                              final String catName = cat['name'];
+                              final IconData icon = cat['icon'];
+                              final Color catColor = cat['color'];
+                              final bool isSelected = _currentCategory.toLowerCase() == catName.toLowerCase();
+
+                              return Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 3.w),
+                                  child: GestureDetector(
+                                    onTap: () => _onCategorySelected(catName),
+                                    child: AnimatedContainer(
+                                      duration: const Duration(milliseconds: 200),
+                                      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 4.w),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? catColor.withOpacity(0.12)
+                                            : AppColors.tertiary.withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(20.r),
+                                        border: Border.all(
+                                          color: isSelected ? catColor : Colors.transparent,
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            icon,
+                                            size: 14.sp,
+                                            color: isSelected ? catColor : AppColors.neutral,
+                                          ),
+                                          SizedBox(width: 4.w),
+                                          Flexible(
+                                            child: Text(
+                                              catName,
+                                              style: TextStyle(
+                                                fontSize: 10.sp,
+                                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                                color: isSelected ? catColor : AppColors.neutral,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
                     const Divider(),
                     _buildDetailRow('Billing Cycle', 'Monthly'),
                     const Divider(),
@@ -102,9 +237,9 @@ class SubscriptionDetailsView extends GetView<SubscriptionsController> {
                 ),
               ),
             ),
-            
+
             AppSizes.gapH16,
-            
+
             // Actions
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppSizes.padding16),
@@ -127,7 +262,11 @@ class SubscriptionDetailsView extends GetView<SubscriptionsController> {
                   SizedBox(
                     width: double.infinity,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        if (_sub['id'] != null) {
+                          controller.cancelSubscription(_sub['id'].toString());
+                        }
+                      },
                       child: Text('Cancel Subscription', style: TextStyle(color: Colors.red)),
                     ),
                   )
