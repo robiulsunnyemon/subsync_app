@@ -5,6 +5,7 @@ import 'package:subsync/app/data/providers/subscription_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:subsync/app/core/utils/custom_snackbar.dart';
 import 'package:subsync/app/modules/dashboard/controllers/dashboard_controller.dart';
+import 'package:subsync/app/modules/tax_report/controllers/tax_report_controller.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
 
@@ -87,6 +88,9 @@ class SubscriptionsController extends GetxController {
       if (Get.isRegistered<DashboardController>()) {
         Get.find<DashboardController>().fetchDashboardData();
       }
+      if (Get.isRegistered<TaxReportController>()) {
+        Get.find<TaxReportController>().fetchReport();
+      }
     } on DioException catch (e) {
       Get.back();
       String message = e.response?.data['message'] ?? 'Failed to cancel subscription';
@@ -111,6 +115,9 @@ class SubscriptionsController extends GetxController {
       fetchSubscriptions();
       if (Get.isRegistered<DashboardController>()) {
         Get.find<DashboardController>().fetchDashboardData();
+      }
+      if (Get.isRegistered<TaxReportController>()) {
+        Get.find<TaxReportController>().fetchReport();
       }
       return true;
     } on DioException catch (e) {
