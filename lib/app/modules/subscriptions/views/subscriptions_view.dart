@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../controllers/subscriptions_controller.dart';
+import '../../bottom_navigation/controllers/bottom_navigation_controller.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_sizes.dart';
@@ -25,7 +26,11 @@ class SubscriptionsView extends GetView<SubscriptionsController> {
         actions: [
           IconButton(
             icon: Icon(Icons.add, color: AppColors.primary),
-            onPressed: () {},
+            onPressed: () {
+              if (Get.isRegistered<BottomNavigationController>()) {
+                Get.find<BottomNavigationController>().changePage(2);
+              }
+            },
           )
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:subsync/app/core/theme/app_colors.dart';
@@ -15,9 +16,15 @@ class SplashView extends GetView<SplashController> {
     // Ensure controller is initialized
     Get.put(SplashController());
     
-    return Scaffold(
-      backgroundColor: AppColors.primary,
-      body: Center(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        backgroundColor: AppColors.primary,
+        body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -99,7 +106,8 @@ class SplashView extends GetView<SplashController> {
             AppSizes.gapH40,
           ],
         ),
-      ),
+       ),
+      )
     );
   }
 }
