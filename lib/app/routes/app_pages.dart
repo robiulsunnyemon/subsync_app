@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../modules/home/bindings/home_binding.dart';
@@ -117,6 +118,10 @@ class AppPages {
       name: _Paths.NOTIFICATION_SETTINGS,
       page: () => const NotificationSettingsView(),
       binding: SettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.BANK_CALLBACK,
+      page: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
     ),
   ];
 }

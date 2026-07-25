@@ -19,6 +19,7 @@ abstract class Routes {
   static const TAX_REPORT = _Paths.TAX_REPORT;
   static const SETTINGS = _Paths.SETTINGS;
   static const NOTIFICATION_SETTINGS = _Paths.NOTIFICATION_SETTINGS;
+  static const BANK_CALLBACK = _Paths.BANK_CALLBACK;
 }
 
 abstract class _Paths {
@@ -39,4 +40,5 @@ abstract class _Paths {
   static const TAX_REPORT = '/tax-report';
   static const SETTINGS = '/settings';
   static const NOTIFICATION_SETTINGS = '/settings/notifications';
+  static const BANK_CALLBACK = '/bank-callback';
 }
