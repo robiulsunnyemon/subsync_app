@@ -20,6 +20,7 @@ abstract class Routes {
   static const SETTINGS = _Paths.SETTINGS;
   static const NOTIFICATION_SETTINGS = _Paths.NOTIFICATION_SETTINGS;
   static const BANK_CALLBACK = _Paths.BANK_CALLBACK;
+  static const BOTTOM_NAVIGATION = _Paths.BOTTOM_NAVIGATION;
 }
 
 abstract class _Paths {
@@ -41,4 +42,5 @@ abstract class _Paths {
   static const SETTINGS = '/settings';
   static const NOTIFICATION_SETTINGS = '/settings/notifications';
   static const BANK_CALLBACK = '/bank-callback';
+  static const BOTTOM_NAVIGATION = '/bottom-navigation';
 }

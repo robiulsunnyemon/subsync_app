@@ -17,20 +17,24 @@ class ConnectBankView extends GetView<BankConnectionController> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.primary),
-          onPressed: () => Get.back(),
-        ),
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: Icon(Icons.arrow_back, color: AppColors.primary),
+                onPressed: () => Get.back(),
+              )
+            : null,
         title: Text(
           'Connect Bank',
           style: AppTextStyles.h3.copyWith(color: AppColors.primary),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: Text('Cancel', style: TextStyle(color: AppColors.neutral)),
-          )
-        ],
+        actions: Navigator.canPop(context)
+            ? [
+                TextButton(
+                  onPressed: () => Get.back(),
+                  child: Text('Cancel', style: TextStyle(color: AppColors.neutral)),
+                )
+              ]
+            : null,
       ),
       body: SingleChildScrollView(
         child: Padding(

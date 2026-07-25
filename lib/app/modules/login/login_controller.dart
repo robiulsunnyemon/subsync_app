@@ -51,7 +51,7 @@ class LoginController extends GetxController {
           box.write('token', response.data['token']);
         }
         CustomSnackbar.showSuccess('Success', 'Login successful');
-        Get.offAllNamed(Routes.DASHBOARD);
+        Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
       }
     } catch (e) {
       String errorMessage = 'Invalid credentials or server error';
@@ -100,7 +100,7 @@ class LoginController extends GetxController {
               box.write('token', response.data['token']);
             }
             CustomSnackbar.showSuccess('Success', 'Google Login successful');
-            Get.offAllNamed(Routes.DASHBOARD);
+            Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
           }
         } else {
           debugPrint("ID Token is null!");

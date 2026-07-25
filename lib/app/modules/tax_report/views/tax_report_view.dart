@@ -17,10 +17,12 @@ class TaxReportView extends GetView<TaxReportController> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.primary),
-          onPressed: () => Get.back(),
-        ),
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: Icon(Icons.arrow_back, color: AppColors.primary),
+                onPressed: () => Get.back(),
+              )
+            : null,
         title: Text(
           'Tax Report',
           style: AppTextStyles.h3.copyWith(color: AppColors.primary),

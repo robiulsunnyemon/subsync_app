@@ -10,7 +10,7 @@ class SplashController extends GetxController {
       final box = get_storage.GetStorage();
       final token = box.read('token');
       if (token != null && token.toString().isNotEmpty) {
-        Get.offAllNamed(Routes.DASHBOARD);
+        Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
       } else {
         Get.offAllNamed(Routes.ONBOARDING);
       }

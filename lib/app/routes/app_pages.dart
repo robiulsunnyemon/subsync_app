@@ -30,6 +30,8 @@ import '../modules/tax_report/views/tax_report_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/account_profile_view.dart';
 import '../modules/settings/views/notification_settings_view.dart';
+import '../modules/bottom_navigation/bindings/bottom_navigation_binding.dart';
+import '../modules/bottom_navigation/views/bottom_navigation_view.dart';
 
 part 'app_routes.dart';
 
@@ -126,6 +128,11 @@ class AppPages {
     GetPage(
       name: '/subsync://bank-callback',
       page: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+    ),
+    GetPage(
+      name: _Paths.BOTTOM_NAVIGATION,
+      page: () => const BottomNavigationView(),
+      binding: BottomNavigationBinding(),
     ),
   ];
 }

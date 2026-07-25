@@ -17,6 +17,7 @@ class SubscriptionsView extends GetView<SubscriptionsController> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
+        automaticallyImplyLeading: Navigator.canPop(context),
         title: Text(
           'Subscriptions',
           style: AppTextStyles.h3.copyWith(color: AppColors.primary),
