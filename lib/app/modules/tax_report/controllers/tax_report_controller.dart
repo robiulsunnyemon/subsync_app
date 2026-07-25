@@ -59,7 +59,7 @@ class TaxReportController extends GetxController {
     final now = DateTime.now();
     startDate.value = DateTime(now.year, 1, 1);
     endDate.value = DateTime(now.year, 12, 31);
-    selectedPreset.value = 'Calendar Year';
+    selectedPreset.value = 'EU / Calendar Year';
     fetchReport();
   }
 
@@ -72,6 +72,41 @@ class TaxReportController extends GetxController {
     startDate.value = DateTime(year, 4, 6);
     endDate.value = DateTime(year + 1, 4, 5);
     selectedPreset.value = 'UK Tax Year';
+    fetchReport();
+  }
+
+  void setQuarter(int q) {
+    final now = DateTime.now();
+    final year = now.year;
+    if (q == 1) {
+      startDate.value = DateTime(year, 1, 1);
+      endDate.value = DateTime(year, 3, 31);
+      selectedPreset.value = 'Q1 VAT';
+    } else if (q == 2) {
+      startDate.value = DateTime(year, 4, 1);
+      endDate.value = DateTime(year, 6, 30);
+      selectedPreset.value = 'Q2 VAT';
+    } else if (q == 3) {
+      startDate.value = DateTime(year, 7, 1);
+      endDate.value = DateTime(year, 9, 30);
+      selectedPreset.value = 'Q3 VAT';
+    } else if (q == 4) {
+      startDate.value = DateTime(year, 10, 1);
+      endDate.value = DateTime(year, 12, 31);
+      selectedPreset.value = 'Q4 VAT';
+    }
+    fetchReport();
+  }
+
+  void setAUTaxYear() {
+    final now = DateTime.now();
+    int year = now.year;
+    if (now.month < 7) {
+      year = year - 1;
+    }
+    startDate.value = DateTime(year, 7, 1);
+    endDate.value = DateTime(year + 1, 6, 30);
+    selectedPreset.value = 'AU Tax Year';
     fetchReport();
   }
 

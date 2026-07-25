@@ -96,15 +96,29 @@ class TaxReportView extends GetView<TaxReportController> {
                 ),
                 AppSizes.gapH12,
 
-                // Quick Preset Chips (Calendar Year, UK Tax Year, Custom)
-                Row(
-                  children: [
-                    _buildPresetChip('Calendar Year', controller.setCalendarYear),
-                    SizedBox(width: 8.w),
-                    _buildPresetChip('UK Tax Year', controller.setUKTaxYear),
-                    SizedBox(width: 8.w),
-                    _buildPresetChip('Custom', () => controller.selectCustomDateRange(context)),
-                  ],
+                // Quick Preset Chips (Horizontally Scrollable for Tink European Countries)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  child: Row(
+                    children: [
+                      _buildPresetChip('EU / Calendar Year', controller.setCalendarYear),
+                      SizedBox(width: 8.w),
+                      _buildPresetChip('UK Tax Year', controller.setUKTaxYear),
+                      SizedBox(width: 8.w),
+                      _buildPresetChip('Q1 VAT', () => controller.setQuarter(1)),
+                      SizedBox(width: 8.w),
+                      _buildPresetChip('Q2 VAT', () => controller.setQuarter(2)),
+                      SizedBox(width: 8.w),
+                      _buildPresetChip('Q3 VAT', () => controller.setQuarter(3)),
+                      SizedBox(width: 8.w),
+                      _buildPresetChip('Q4 VAT', () => controller.setQuarter(4)),
+                      SizedBox(width: 8.w),
+                      _buildPresetChip('AU Tax Year', controller.setAUTaxYear),
+                      SizedBox(width: 8.w),
+                      _buildPresetChip('Custom', () => controller.selectCustomDateRange(context)),
+                    ],
+                  ),
                 ),
                 AppSizes.gapH20,
                 
