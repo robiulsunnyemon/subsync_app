@@ -123,5 +123,9 @@ class AppPages {
       name: _Paths.BANK_CALLBACK,
       page: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
     ),
+    GetPage(
+      name: 'subsync://bank-callback',
+      page: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+    ),
   ];
 }
