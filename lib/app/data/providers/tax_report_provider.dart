@@ -11,13 +11,18 @@ class TaxReportProvider {
     );
   }
 
-  // To download a file, you'd usually use a launchUrl or Dio download.
-  // For simplicity, we assume the backend returns a URL to the file,
-  // or we launch the endpoint directly in a browser with the auth token.
-  Future<Response> generateReportFile(String year, String format) async {
+  Future<Response> downloadTaxReportCsv(String year) async {
     return await _apiClient.get(
-      '/reports/tax/$format',
+      '/reports/tax/csv',
       queryParameters: {'year': year},
+    );
+  }
+
+  Future<Response> downloadTaxReportPdf(String year) async {
+    return await _apiClient.get(
+      '/reports/tax/pdf',
+      queryParameters: {'year': year},
+      options: Options(responseType: ResponseType.bytes),
     );
   }
 }
