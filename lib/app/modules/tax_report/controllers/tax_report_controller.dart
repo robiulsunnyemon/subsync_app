@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:subsync/app/core/utils/custom_snackbar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
+import 'package:subsync/app/modules/tax_report/views/invoice_viewer_view.dart';
 
 class TaxReportController extends GetxController {
   
@@ -163,7 +164,7 @@ class TaxReportController extends GetxController {
         await file.writeAsString(csvContent);
 
         CustomSnackbar.showSuccess('Success', 'CSV Report downloaded successfully');
-        await OpenFile.open(filePath);
+        Get.to(() => InvoiceViewerView(filePath: filePath, fileType: 'csv'));
       } else {
         CustomSnackbar.showError('Error', 'Failed to generate CSV report');
       }
@@ -213,7 +214,7 @@ class TaxReportController extends GetxController {
         await file.writeAsBytes(bytes);
 
         CustomSnackbar.showSuccess('Success', 'PDF Tax Report downloaded successfully');
-        await OpenFile.open(filePath);
+        Get.to(() => InvoiceViewerView(filePath: filePath, fileType: 'pdf'));
       } else {
         CustomSnackbar.showError('Error', 'Failed to generate PDF report');
       }
