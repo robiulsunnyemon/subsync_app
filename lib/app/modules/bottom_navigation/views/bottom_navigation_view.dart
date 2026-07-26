@@ -34,7 +34,7 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildNavItem(0, Icons.dashboard_outlined, Icons.dashboard, 'Dashboard'),
-                  _buildNavItem(1, Icons.credit_card_outlined, Icons.credit_card, 'Subs'),
+                  _buildNavItem(1, Icons.credit_card_outlined, Icons.credit_card, 'Subscription'),
                   _buildCenterPlusItem(2),
                   _buildNavItem(3, Icons.receipt_long_outlined, Icons.receipt_long, 'Tax'),
                   _buildNavItem(4, Icons.person_outline, Icons.person, 'Profile'),

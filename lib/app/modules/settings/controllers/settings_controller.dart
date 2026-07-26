@@ -122,15 +122,17 @@ class SettingsController extends GetxController {
         aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
         uiSettings: [
           AndroidUiSettings(
-            toolbarTitle: 'Crop & Position Profile Photo',
+            toolbarTitle: '',
             toolbarColor: AppColors.primary,
+            statusBarColor: Colors.black,
             toolbarWidgetColor: Colors.white,
+            activeControlsWidgetColor: AppColors.secondary,
             initAspectRatio: CropAspectRatioPreset.square,
             lockAspectRatio: true,
             cropStyle: CropStyle.circle,
           ),
           IOSUiSettings(
-            title: 'Crop & Position Profile Photo',
+            title: '',
             aspectRatioLockEnabled: true,
           ),
         ],
