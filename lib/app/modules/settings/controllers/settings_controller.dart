@@ -1,12 +1,16 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:subsync/app/data/providers/settings_provider.dart';
 import 'package:get_storage/get_storage.dart' as get_storage;
 import 'package:dio/dio.dart';
 import 'package:subsync/app/core/utils/custom_snackbar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:subsync/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:subsync/app/modules/tax_report/controllers/tax_report_controller.dart';
+import 'package:subsync/app/core/theme/app_colors.dart';
 
 class SettingsController extends GetxController {
   
@@ -104,17 +108,128 @@ class SettingsController extends GetxController {
     }
   }
 
-  Future<void> pickAndUploadImage() async {
+  Future<void> pickCropAndPreviewImage(BuildContext context) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
         source: ImageSource.gallery,
-        maxWidth: 800,
-        maxHeight: 800,
-        imageQuality: 85,
+        imageQuality: 100,
       );
 
       if (pickedFile == null) return;
 
+      final CroppedFile? croppedFile = await ImageCropper().cropImage(
+        sourcePath: pickedFile.path,
+        cropStyle: CropStyle.circle,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop & Position Profile Photo',
+            toolbarColor: AppColors.primary,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true,
+          ),
+          IOSUiSettings(
+            title: 'Crop & Position Profile Photo',
+            aspectRatioLockEnabled: true,
+          ),
+        ],
+      );
+
+      if (croppedFile == null) return;
+
+      // Show Live Preview Dialog before uploading
+      if (context.mounted) {
+        _showPreviewDialog(context, File(croppedFile.path));
+      }
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to pick or crop image');
+    }
+  }
+
+  void _showPreviewDialog(BuildContext context, File imageFile) {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+        child: Padding(
+          padding: EdgeInsets.all(20.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Profile Photo Preview',
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: AppColors.primary),
+              ),
+              SizedBox(height: 6.h),
+              Text(
+                'Here is how your cropped avatar will look on your profile & dashboard:',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 11.sp, color: AppColors.neutral),
+              ),
+              SizedBox(height: 20.h),
+              
+              // Live Avatar Preview
+              Container(
+                padding: EdgeInsets.all(4.w),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.primary, width: 2.5),
+                ),
+                child: CircleAvatar(
+                  radius: 60.r,
+                  backgroundColor: AppColors.tertiary,
+                  backgroundImage: FileImage(imageFile),
+                ),
+              ),
+              
+              SizedBox(height: 24.h),
+              
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Get.back();
+                        pickCropAndPreviewImage(context);
+                      },
+                      icon: Icon(Icons.crop_outlined, size: 16.sp, color: AppColors.primary),
+                      label: Text('Re-crop', style: TextStyle(color: AppColors.primary, fontSize: 12.sp)),
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                        side: BorderSide(color: AppColors.primary),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Get.back();
+                        _uploadCroppedImage(imageFile.path);
+                      },
+                      icon: Icon(Icons.check, size: 16.sp, color: Colors.white),
+                      label: Text('Upload & Save', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12.sp)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
+
+  Future<void> _uploadCroppedImage(String filePath) async {
+    try {
       isUploadingImage.value = true;
       Get.dialog(
         const Center(
@@ -135,7 +250,7 @@ class SettingsController extends GetxController {
         barrierDismissible: false,
       );
 
-      final response = await _provider.uploadProfileImage(pickedFile.path);
+      final response = await _provider.uploadProfileImage(filePath);
       if (Get.isDialogOpen ?? false) Get.back();
 
       if (response.statusCode == 200 && response.data != null) {
@@ -160,7 +275,7 @@ class SettingsController extends GetxController {
       CustomSnackbar.showError('Error', message);
     } catch (e) {
       if (Get.isDialogOpen ?? false) Get.back();
-      CustomSnackbar.showError('Error', 'Failed to select or upload image');
+      CustomSnackbar.showError('Error', 'Failed to upload image');
     } finally {
       isUploadingImage.value = false;
     }

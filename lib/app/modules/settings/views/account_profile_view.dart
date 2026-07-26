@@ -106,7 +106,7 @@ class _AccountProfileViewState extends State<AccountProfileView> {
                 child: Column(
                   children: [
                     GestureDetector(
-                      onTap: () => controller.pickAndUploadImage(),
+                      onTap: () => controller.pickCropAndPreviewImage(context),
                       child: Stack(
                         alignment: Alignment.bottomRight,
                         children: [
