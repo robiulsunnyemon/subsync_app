@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:subsync/app/data/providers/bank_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:subsync/app/core/utils/custom_snackbar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:subsync/app/core/theme/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:app_links/app_links.dart';
 import 'dart:async';
@@ -170,6 +172,59 @@ class BankConnectionController extends GetxController {
   // Navigate to auth screen
   // ─────────────────────────────────────────────
   void connectBank(String bankName) {
+    if (isBankConnected(bankName)) {
+      final conn = myConnections.firstWhere(
+        (c) {
+          if (c is Map) {
+            final name = (c['institutionName'] ?? c['bankName'] ?? '').toString().toLowerCase();
+            final bName = bankName.toLowerCase();
+            return name.contains(bName) || bName.contains(name);
+          }
+          return false;
+        },
+        orElse: () => null,
+      );
+
+      final String connectionId = conn != null && conn is Map ? (conn['id'] ?? '').toString() : '';
+
+      Get.dialog(
+        AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          title: Row(
+            children: [
+              Icon(Icons.check_circle, color: AppColors.secondary, size: 24.sp),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Text(
+                  '$bankName Connected',
+                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            '$bankName is already connected and syncing your subscription transactions.',
+            style: TextStyle(fontSize: 13.sp),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: const Text('OK'),
+            ),
+            if (connectionId.isNotEmpty)
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                  disconnectBank(connectionId, bankName);
+                },
+                child: const Text('Disconnect', style: TextStyle(color: Colors.red)),
+              ),
+          ],
+        ),
+      );
+      return;
+    }
+
     selectedBankName.value = bankName;
     Get.toNamed('/bank-connection/auth', arguments: bankName);
   }
@@ -233,6 +288,19 @@ class BankConnectionController extends GetxController {
     } catch (e) {
       // Silently ignore - user might not have any connections
     }
+  }
+
+  bool isBankConnected(String bankName) {
+    if (myConnections.isEmpty) return false;
+    final nameLower = bankName.trim().toLowerCase();
+    return myConnections.any((conn) {
+      if (conn is Map) {
+        final instName = (conn['institutionName'] ?? conn['bankName'] ?? '').toString().toLowerCase();
+        final instId = (conn['institutionId'] ?? '').toString().toLowerCase();
+        return instName.contains(nameLower) || nameLower.contains(instName) || instId.contains(nameLower);
+      }
+      return false;
+    });
   }
 
   // ─────────────────────────────────────────────
