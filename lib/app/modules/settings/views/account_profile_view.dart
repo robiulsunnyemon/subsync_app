@@ -214,11 +214,26 @@ class _AccountProfileViewState extends State<AccountProfileView> {
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(12.r),
                 ),
-                child: ListTile(
-                  leading: Icon(Icons.notifications_outlined, color: AppColors.primary),
-                  title: Text('Notification Settings', style: AppTextStyles.bodyText),
-                  trailing: Icon(Icons.chevron_right, color: AppColors.neutral),
-                  onTap: () => controller.navigateToNotifications(),
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.notifications_outlined, color: AppColors.primary),
+                      title: Text('Notification Settings', style: AppTextStyles.bodyText),
+                      trailing: Icon(Icons.chevron_right, color: AppColors.neutral),
+                      onTap: () => controller.navigateToNotifications(),
+                    ),
+                    Divider(height: 1, indent: 16.w, endIndent: 16.w, color: AppColors.neutral.withValues(alpha: 0.2)),
+                    Obx(() => ListTile(
+                      leading: Icon(Icons.brightness_6_outlined, color: AppColors.primary),
+                      title: Text('App Theme', style: AppTextStyles.bodyText),
+                      subtitle: Text(
+                        controller.selectedThemeName.value,
+                        style: TextStyle(fontSize: 12.sp, color: AppColors.neutral),
+                      ),
+                      trailing: Icon(Icons.chevron_right, color: AppColors.neutral),
+                      onTap: () => controller.showThemeSelectorDialog(context),
+                    )),
+                  ],
                 ),
               ),
 

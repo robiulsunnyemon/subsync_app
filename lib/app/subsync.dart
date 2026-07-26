@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:subsync/app/routes/app_pages.dart';
 import 'package:subsync/app/core/theme/app_theme.dart';
+import 'package:subsync/app/core/theme/theme_service.dart';
 import 'package:subsync/app/core/constants/app_constants.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,6 +28,8 @@ class SubSync extends StatelessWidget {
             ),
           ),
           theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeService().theme,
           debugShowCheckedModeBanner: false,
           defaultTransition: Transition.fadeIn,
           transitionDuration: const Duration(milliseconds: 300)
