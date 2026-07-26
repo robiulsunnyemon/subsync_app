@@ -71,7 +71,9 @@ class _SubscriptionDetailsViewState extends State<SubscriptionDetailsView> {
     return Scaffold(
       backgroundColor: AppColors.tertiary,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.tertiary,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),

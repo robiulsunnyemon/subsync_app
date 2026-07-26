@@ -16,7 +16,9 @@ class SubscriptionsView extends GetView<SubscriptionsController> {
     return Scaffold(
       backgroundColor: AppColors.tertiary,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.tertiary,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: Navigator.canPop(context),
         title: Text(
