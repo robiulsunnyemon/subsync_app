@@ -64,8 +64,10 @@ class _AccountProfileViewState extends State<AccountProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.tertiary,
+    return Obx(() {
+      final _ = controller.selectedThemeName.value;
+      return Scaffold(
+        backgroundColor: AppColors.tertiary,
       appBar: AppBar(
         backgroundColor: AppColors.tertiary,
         scrolledUnderElevation: 0,
@@ -251,6 +253,7 @@ class _AccountProfileViewState extends State<AccountProfileView> {
         ),
       ),
     );
+    });
   }
 
   Widget _buildEditableInput(String label, String hint, TextEditingController inputController, IconData icon) {
@@ -269,18 +272,27 @@ class _AccountProfileViewState extends State<AccountProfileView> {
           AppSizes.gapH4,
           TextField(
             controller: inputController,
-            style: AppTextStyles.bodyText.copyWith(fontWeight: FontWeight.w600),
+            style: AppTextStyles.bodyText.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
             decoration: InputDecoration(
+              filled: true,
+              fillColor: AppColors.white,
               hintText: hint,
-              hintStyle: TextStyle(fontSize: 12.sp, color: Colors.grey.shade400, fontWeight: FontWeight.normal),
+              hintStyle: TextStyle(fontSize: 12.sp, color: AppColors.neutral.withValues(alpha: 0.6), fontWeight: FontWeight.normal),
               isDense: true,
-              contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+              contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.r),
-                borderSide: BorderSide(color: AppColors.tertiary),
+                borderRadius: BorderRadius.circular(8.r),
+                borderSide: BorderSide(color: AppColors.neutral.withValues(alpha: 0.2)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.r),
+                borderSide: BorderSide(color: AppColors.neutral.withValues(alpha: 0.2)),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.r),
+                borderRadius: BorderRadius.circular(8.r),
                 borderSide: BorderSide(color: AppColors.primary),
               ),
             ),

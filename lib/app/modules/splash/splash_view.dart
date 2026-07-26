@@ -64,7 +64,7 @@ class SplashView extends GetView<SplashController> {
               width: 200.w,
               child: LinearProgressIndicator(
                 backgroundColor: AppColors.white.withValues(alpha:0.2),
-                valueColor: const AlwaysStoppedAnimation<Color>(AppColors.secondary),
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.secondary),
               ),
             ),
             AppSizes.gapH12,

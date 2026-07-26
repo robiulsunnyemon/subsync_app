@@ -40,7 +40,7 @@ class _InvoiceViewerViewState extends State<InvoiceViewerView> {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+          icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
         ),
         title: Text(
@@ -49,7 +49,7 @@ class _InvoiceViewerViewState extends State<InvoiceViewerView> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.open_in_new, color: AppColors.primary),
+            icon: Icon(Icons.open_in_new, color: AppColors.primary),
             tooltip: 'Open in external app',
             onPressed: () async {
               await OpenFile.open(widget.filePath);

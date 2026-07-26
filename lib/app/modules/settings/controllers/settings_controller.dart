@@ -8,17 +8,18 @@ import 'package:dio/dio.dart';
 import 'package:subsync/app/core/utils/custom_snackbar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:subsync/app/core/theme/theme_service.dart';
+import 'package:subsync/app/core/theme/theme_controller.dart';
 import 'package:subsync/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:subsync/app/modules/tax_report/controllers/tax_report_controller.dart';
 import 'package:subsync/app/core/theme/app_colors.dart';
+import 'package:subsync/app/core/theme/app_text_styles.dart';
 
 class SettingsController extends GetxController {
   
   final SettingsProvider _provider = SettingsProvider();
 
   // Theme
-  final selectedThemeName = ThemeService().currentThemeName.obs;
+  final selectedThemeName = ThemeController.to.currentThemeName.obs;
 
   // Notification Settings
   final emailEnabled = true.obs;
@@ -292,7 +293,7 @@ class SettingsController extends GetxController {
       Container(
         padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: AppColors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         child: Column(
@@ -301,33 +302,33 @@ class SettingsController extends GetxController {
           children: [
             Text(
               'Select Theme Mode',
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+              style: AppTextStyles.h3.copyWith(color: AppColors.primary),
             ),
             SizedBox(height: 16.h),
             ListTile(
               leading: const Icon(Icons.wb_sunny_outlined, color: Colors.amber),
-              title: const Text('Light Mode'),
+              title: Text('Light Mode', style: AppTextStyles.bodyText),
               onTap: () {
-                ThemeService().switchThemeMode(ThemeMode.light);
-                selectedThemeName.value = ThemeService().currentThemeName;
+                ThemeController.to.changeThemeMode(ThemeMode.light);
+                selectedThemeName.value = ThemeController.to.currentThemeName;
                 Get.back();
               },
             ),
             ListTile(
               leading: const Icon(Icons.dark_mode_outlined, color: Colors.indigo),
-              title: const Text('Dark Mode'),
+              title: Text('Dark Mode', style: AppTextStyles.bodyText),
               onTap: () {
-                ThemeService().switchThemeMode(ThemeMode.dark);
-                selectedThemeName.value = ThemeService().currentThemeName;
+                ThemeController.to.changeThemeMode(ThemeMode.dark);
+                selectedThemeName.value = ThemeController.to.currentThemeName;
                 Get.back();
               },
             ),
             ListTile(
               leading: const Icon(Icons.settings_suggest_outlined, color: Colors.teal),
-              title: const Text('System Default'),
+              title: Text('System Default', style: AppTextStyles.bodyText),
               onTap: () {
-                ThemeService().switchThemeMode(ThemeMode.system);
-                selectedThemeName.value = ThemeService().currentThemeName;
+                ThemeController.to.changeThemeMode(ThemeMode.system);
+                selectedThemeName.value = ThemeController.to.currentThemeName;
                 Get.back();
               },
             ),

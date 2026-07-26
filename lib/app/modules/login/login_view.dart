@@ -13,7 +13,7 @@ class LoginView extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.tertiary,
       appBar: AppBar(
         title: Text(AppConstants.appName, style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: AppSizes.font20)),
         backgroundColor: Colors.transparent,
@@ -50,7 +50,7 @@ class LoginView extends GetView<LoginController> {
               AppSizes.gapH8,
               Obx(() => TextField(
                 controller: controller.emailController,
-                style: TextStyle(fontSize: AppSizes.font14),
+                style: TextStyle(fontSize: AppSizes.font14, color: AppColors.textPrimary),
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.mail_outline, color: AppColors.neutral, size: AppSizes.iconMedium),
                   hintText: 'name@company.com',
@@ -74,7 +74,7 @@ class LoginView extends GetView<LoginController> {
               Obx(() => TextField(
                 controller: controller.passwordController,
                 obscureText: !controller.isPasswordVisible.value,
-                style: TextStyle(fontSize: AppSizes.font14),
+                style: TextStyle(fontSize: AppSizes.font14, color: AppColors.textPrimary),
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.lock_outline, color: AppColors.neutral, size: AppSizes.iconMedium),
                   hintText: '********',

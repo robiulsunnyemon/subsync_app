@@ -15,7 +15,6 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
             children: controller.pages,
           )),
       bottomNavigationBar: Obx(() {
-        final int index = controller.currentIndex.value;
         return Container(
           decoration: BoxDecoration(
             color: AppColors.white,

@@ -103,9 +103,10 @@ class DashboardView extends GetView<DashboardController> {
   }
 
   Widget _buildShimmerScreen() {
+    final bool isDark = Get.isDarkMode;
     return Shimmer.fromColors(
-      baseColor: const Color(0xFFE8E8E8),
-      highlightColor: const Color(0xFFF5F5F5),
+      baseColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFE8E8E8),
+      highlightColor: isDark ? const Color(0xFF334155) : const Color(0xFFF5F5F5),
       child: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
         child: Padding(
@@ -237,7 +238,7 @@ class DashboardView extends GetView<DashboardController> {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(radius.r),
       ),
     );

@@ -10,7 +10,7 @@ class AppTheme {
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.tertiary,
     fontFamily: 'Inter',
-    colorScheme: const ColorScheme.light(
+    colorScheme: ColorScheme.light(
       primary: AppColors.primary,
       secondary: AppColors.secondary,
     ),
@@ -20,9 +20,9 @@ class AppTheme {
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       centerTitle: true,
-      iconTheme: const IconThemeData(color: AppColors.primary),
+      iconTheme: IconThemeData(color: AppColors.primary),
       titleTextStyle: AppTextStyles.headline.copyWith(fontSize: 20),
-      systemOverlayStyle: SystemUiOverlayStyle.dark, // Ensures status bar icons are dark (black)
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -41,7 +41,7 @@ class AppTheme {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.neutral),
+        borderSide: BorderSide(color: AppColors.neutral),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
@@ -49,7 +49,7 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.primary),
+        borderSide: BorderSide(color: AppColors.primary),
       ),
       labelStyle: AppTextStyles.label,
       hintStyle: AppTextStyles.body.copyWith(color: AppColors.neutral.withValues(alpha: 0.5)),
@@ -60,7 +60,7 @@ class AppTheme {
     primaryColor: AppColors.darkPrimary,
     scaffoldBackgroundColor: AppColors.darkBackground,
     fontFamily: 'Inter',
-    colorScheme: const ColorScheme.dark(
+    colorScheme: ColorScheme.dark(
       primary: AppColors.darkPrimary,
       secondary: AppColors.secondary,
       surface: AppColors.darkSurface,
@@ -75,12 +75,12 @@ class AppTheme {
       titleTextStyle: AppTextStyles.headline.copyWith(fontSize: 20, color: AppColors.darkTextPrimary),
       systemOverlayStyle: SystemUiOverlayStyle.light,
     ),
-    cardTheme: CardTheme(
+    cardTheme: const CardThemeData(
       color: AppColors.darkSurface,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: AppColors.darkBorder),
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+        side: BorderSide(color: AppColors.darkBorder),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(

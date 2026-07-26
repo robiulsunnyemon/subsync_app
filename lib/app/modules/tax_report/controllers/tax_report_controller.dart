@@ -5,7 +5,6 @@ import 'package:subsync/app/data/providers/tax_report_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:subsync/app/core/utils/custom_snackbar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:open_file/open_file.dart';
 import 'package:subsync/app/modules/tax_report/views/invoice_viewer_view.dart';
 
 class TaxReportController extends GetxController {
