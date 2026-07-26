@@ -93,11 +93,11 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
         width: 48.w,
         height: 48.w,
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.secondary : AppColors.primary,
+          color: isSelected ? AppColors.primary : AppColors.neutral,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: (isSelected ? AppColors.secondary : AppColors.primary).withOpacity(0.3),
+              color: (isSelected ? AppColors.primary : AppColors.neutral).withOpacity(0.3),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),

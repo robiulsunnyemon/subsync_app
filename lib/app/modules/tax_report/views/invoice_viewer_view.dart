@@ -137,59 +137,163 @@ class _InvoiceViewerViewState extends State<InvoiceViewerView> {
       }
 
       final String content = file.readAsStringSync();
-      final List<String> lines = content.split('\n').where((line) => line.trim().isNotEmpty).toList();
+      final List<String> lines = content
+          .split('\n')
+          .map((l) => l.trim())
+          .where((l) => l.isNotEmpty)
+          .toList();
 
       if (lines.isEmpty) {
         return const Center(child: Text('CSV File is empty.'));
       }
 
-      final List<String> headers = lines.first.split(',').map((e) => e.replaceAll('"', '').trim()).toList();
-      final List<List<String>> rows = lines.skip(1).map((line) {
-        return line.split(',').map((e) => e.replaceAll('"', '').trim()).toList();
-      }).toList();
+      List<String> metaLines = [];
+      List<String> tableHeaders = [];
+      List<List<String>> dataRows = [];
 
-      return Padding(
+      int headerIndex = -1;
+      for (int i = 0; i < lines.length; i++) {
+        if (lines[i].contains(',')) {
+          final parts = lines[i].split(',');
+          if (parts.length > 2) {
+            headerIndex = i;
+            tableHeaders = parts.map((e) => e.replaceAll('"', '').trim()).toList();
+            break;
+          }
+        }
+        metaLines.add(lines[i]);
+      }
+
+      if (headerIndex != -1) {
+        for (int i = headerIndex + 1; i < lines.length; i++) {
+          final rowParts = lines[i].split(',').map((e) => e.replaceAll('"', '').trim()).toList();
+          if (rowParts.isNotEmpty && rowParts.any((element) => element.isNotEmpty)) {
+            dataRows.add(rowParts);
+          }
+        }
+      } else {
+        // Fallback: If no line has > 2 columns, treat all lines with comma as simple key-value pairs
+        for (var line in lines) {
+          if (line.contains(',')) {
+            dataRows.add(line.split(',').map((e) => e.replaceAll('"', '').trim()).toList());
+          }
+        }
+      }
+
+      return SingleChildScrollView(
         padding: EdgeInsets.all(AppSizes.padding16),
-        child: Card(
-          color: AppColors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            side: BorderSide(color: AppColors.neutral.withValues(alpha: 0.2)),
-          ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(AppColors.primary.withValues(alpha: 0.1)),
-                columns: headers.map((header) {
-                  return DataColumn(
-                    label: Text(
-                      header,
-                      style: AppTextStyles.label.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                      ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Metadata Card (Report Title, Period, Tax Payer)
+            if (metaLines.isNotEmpty)
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(16.w),
+                margin: EdgeInsets.only(bottom: 16.h),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
-                  );
-                }).toList(),
-                rows: rows.map((row) {
-                  return DataRow(
-                    cells: List.generate(headers.length, (index) {
-                      final String text = index < row.length ? row[index] : '';
-                      return DataCell(
-                        Text(
-                          text,
-                          style: AppTextStyles.body.copyWith(fontSize: 12.sp),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: metaLines.map((meta) {
+                    if (meta.contains(',')) {
+                      final parts = meta.split(',');
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 2.h),
+                        child: Row(
+                          children: [
+                            Text(
+                              '${parts[0].replaceAll('"', '').trim()}: ',
+                              style: AppTextStyles.body.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                parts.sublist(1).join(', ').replaceAll('"', '').trim(),
+                                style: AppTextStyles.body.copyWith(color: AppColors.neutral),
+                              ),
+                            ),
+                          ],
                         ),
                       );
-                    }),
-                  );
-                }).toList(),
+                    }
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 6.h),
+                      child: Text(
+                        meta.replaceAll('"', '').trim(),
+                        style: AppTextStyles.h3.copyWith(color: AppColors.primary),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
-            ),
-          ),
+
+            // Table Data Card
+            if (tableHeaders.isNotEmpty)
+              Card(
+                color: AppColors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  side: BorderSide(color: AppColors.neutral.withValues(alpha: 0.2)),
+                ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    headingRowColor: WidgetStateProperty.all(AppColors.primary.withValues(alpha: 0.08)),
+                    columns: tableHeaders.map((header) {
+                      return DataColumn(
+                        label: Text(
+                          header,
+                          style: AppTextStyles.label.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    rows: dataRows.map((row) {
+                      return DataRow(
+                        cells: List.generate(tableHeaders.length, (index) {
+                          final String text = index < row.length ? row[index] : '';
+                          return DataCell(
+                            Text(
+                              text,
+                              style: AppTextStyles.body.copyWith(fontSize: 12.sp),
+                            ),
+                          );
+                        }),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              )
+            else if (dataRows.isNotEmpty)
+              Card(
+                color: AppColors.white,
+                elevation: 0,
+                child: Padding(
+                  padding: EdgeInsets.all(12.w),
+                  child: Column(
+                    children: dataRows.map((r) => ListTile(title: Text(r.join(' : ')))).toList(),
+                  ),
+                ),
+              )
+            else
+              const Center(child: Text('No table data found in CSV.')),
+          ],
         ),
       );
     } catch (e) {
