@@ -54,7 +54,7 @@ class DashboardView extends GetView<DashboardController> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings_outlined, color: AppColors.neutral),
+            icon: Icon(Icons.notification_important_outlined, color: AppColors.neutral),
             onPressed: controller.goToSettings,
           ),
         ],
