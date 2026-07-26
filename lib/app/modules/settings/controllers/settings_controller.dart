@@ -119,7 +119,6 @@ class SettingsController extends GetxController {
 
       final CroppedFile? croppedFile = await ImageCropper().cropImage(
         sourcePath: pickedFile.path,
-        cropStyle: CropStyle.circle,
         aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
         uiSettings: [
           AndroidUiSettings(
@@ -128,6 +127,7 @@ class SettingsController extends GetxController {
             toolbarWidgetColor: Colors.white,
             initAspectRatio: CropAspectRatioPreset.square,
             lockAspectRatio: true,
+            cropStyle: CropStyle.circle,
           ),
           IOSUiSettings(
             title: 'Crop & Position Profile Photo',
