@@ -7,8 +7,34 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_sizes.dart';
 
+import '../../settings/controllers/settings_controller.dart';
+
 class AuthBankView extends GetView<BankConnectionController> {
   const AuthBankView({super.key});
+
+  Widget _buildTopLeftAvatar() {
+    try {
+      if (Get.isRegistered<SettingsController>()) {
+        final settingsCtrl = Get.find<SettingsController>();
+        return Obx(() {
+          final String url = settingsCtrl.profileImage.value;
+          return CircleAvatar(
+            radius: 16.r,
+            backgroundColor: AppColors.tertiary,
+            backgroundImage: url.isNotEmpty ? NetworkImage(url) : null,
+            child: url.isEmpty
+                ? Icon(Icons.person, color: AppColors.primary, size: 18.sp)
+                : null,
+          );
+        });
+      }
+    } catch (_) {}
+    return CircleAvatar(
+      radius: 16.r,
+      backgroundColor: AppColors.tertiary,
+      child: Icon(Icons.person, color: AppColors.primary, size: 18.sp),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,20 +50,12 @@ class AuthBankView extends GetView<BankConnectionController> {
         leading: Row(
           children: [
             AppSizes.gapW8,
-            Icon(Icons.sync_alt, color: AppColors.primary),
+            _buildTopLeftAvatar(),
             AppSizes.gapW8,
             Text('SubSync', style: AppTextStyles.h3.copyWith(color: AppColors.primary)),
           ],
         ),
         leadingWidth: 200,
-        actions: [
-          CircleAvatar(
-            radius: 16.r,
-            backgroundColor: AppColors.tertiary,
-            child: Icon(Icons.person, color: AppColors.neutral, size: 20.sp),
-          ),
-          AppSizes.gapW16,
-        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
