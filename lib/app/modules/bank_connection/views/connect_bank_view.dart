@@ -139,31 +139,87 @@ class ConnectBankView extends GetView<BankConnectionController> {
                       itemCount: controller.popularBanks.length,
                       itemBuilder: (context, index) {
                         var bank = controller.popularBanks[index];
+                        String bankName = bank['name'] as String;
+                        bool isConnected = controller.isBankConnected(bankName);
+
                         return GestureDetector(
-                          onTap: () => controller.connectBank(bank['name'] as String),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.white,
-                              borderRadius: BorderRadius.circular(12.r),
-                              border: Border.all(color: AppColors.tertiary),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: 40.w,
-                                  height: 40.w,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.tertiary,
-                                    shape: BoxShape.circle,
+                          onTap: () => controller.connectBank(bankName),
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                height: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  border: Border.all(
+                                    color: isConnected ? AppColors.secondary : AppColors.tertiary,
+                                    width: isConnected ? 1.5 : 1.0,
                                   ),
-                                  child: Center(child: Text(bank['icon'] as String, style: TextStyle(fontWeight: FontWeight.bold))),
                                 ),
-                                AppSizes.gapH8,
-                                Text(bank['name'] as String, style: AppTextStyles.h3, textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
-                                Text(bank['type'] as String, style: AppTextStyles.label.copyWith(fontSize: 10.sp)),
-                              ],
-                            ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 40.w,
+                                      height: 40.w,
+                                      decoration: BoxDecoration(
+                                        color: isConnected ? AppColors.secondary.withOpacity(0.12) : AppColors.tertiary,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          bank['icon'] as String,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: isConnected ? AppColors.secondary : AppColors.primary,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    AppSizes.gapH8,
+                                    Text(
+                                      bankName,
+                                      style: AppTextStyles.h3,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Text(
+                                      bank['type'] as String,
+                                      style: AppTextStyles.label.copyWith(fontSize: 10.sp),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (isConnected)
+                                Positioned(
+                                  top: 8.h,
+                                  right: 8.w,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.secondary,
+                                      borderRadius: BorderRadius.circular(10.r),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.check_circle, size: 10.sp, color: Colors.white),
+                                        SizedBox(width: 2.w),
+                                        Text(
+                                          'Synced',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 9.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                         );
                       },
@@ -185,18 +241,57 @@ class ConnectBankView extends GetView<BankConnectionController> {
                               color: AppColors.tertiary,
                               child: Text(section['letter'] as String, style: AppTextStyles.label),
                             ),
-                            ...((section['banks'] as List<dynamic>).map((bank) => ListTile(
-                                  tileColor: AppColors.white,
-                                  leading: Container(
-                                    width: 32.w,
-                                    height: 32.w,
-                                    decoration: BoxDecoration(color: AppColors.tertiary, shape: BoxShape.circle),
-                                    child: Center(child: Text((bank['icon'] as String))),
+                            ...((section['banks'] as List<dynamic>).map((bank) {
+                              String bankName = bank['name'] as String;
+                              bool isConnected = controller.isBankConnected(bankName);
+                              return ListTile(
+                                tileColor: AppColors.white,
+                                leading: Container(
+                                  width: 32.w,
+                                  height: 32.w,
+                                  decoration: BoxDecoration(
+                                    color: isConnected ? AppColors.secondary.withOpacity(0.12) : AppColors.tertiary,
+                                    shape: BoxShape.circle,
                                   ),
-                                  title: Text(bank['name'] as String, style: AppTextStyles.bodyText),
-                                  trailing: Icon(Icons.chevron_right, color: AppColors.neutral),
-                                  onTap: () => controller.connectBank(bank['name'] as String),
-                                )).toList()),
+                                  child: Center(
+                                    child: Text(
+                                      (bank['icon'] as String),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: isConnected ? AppColors.secondary : AppColors.primary,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                title: Text(bankName, style: AppTextStyles.bodyText),
+                                trailing: isConnected
+                                    ? Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.secondary.withOpacity(0.12),
+                                          borderRadius: BorderRadius.circular(12.r),
+                                          border: Border.all(color: AppColors.secondary.withOpacity(0.3)),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(Icons.check_circle, size: 12.sp, color: AppColors.secondary),
+                                            SizedBox(width: 4.w),
+                                            Text(
+                                              'Synced',
+                                              style: TextStyle(
+                                                color: AppColors.secondary,
+                                                fontSize: 11.sp,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : Icon(Icons.chevron_right, color: AppColors.neutral),
+                                onTap: () => controller.connectBank(bankName),
+                              );
+                            }).toList()),
                           ],
                         );
                       }).toList(),
